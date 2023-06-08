@@ -74,14 +74,15 @@ public class EnemyLocomotion : MonoBehaviour
                 isPursuit = true;
             if (isPursuit)
             {
-                if ((angleBetweenForwards < 30 && angle > 90) || CharacterManager.GetComponent<Rigidbody>().velocity.magnitude < 0.01f)
+                var characterControllerPlayer = CharacterManager.GetComponent<CharacterController>();
+                if ((angleBetweenForwards < 30 && angle > 90) || characterControllerPlayer.velocity.magnitude < 0.01f)
                 {
                     Seek(targetPosition);
                     Debug.Log("2");
                 }
                 else
                 {
-                    float offset = direction.magnitude / (Agent.speed + this.CharacterManager.GetComponent<Rigidbody>().velocity.magnitude); // Sum of speeds = time to target
+                    float offset = direction.magnitude / (Agent.speed + characterControllerPlayer.velocity.magnitude); // Sum of speeds = time to target
                     Seek(targetPosition + CharacterManager.transform.forward * offset * 1.5f);
                     Debug.Log("1");
                 }

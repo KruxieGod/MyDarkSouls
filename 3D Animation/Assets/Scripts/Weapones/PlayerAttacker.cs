@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using SG;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class PlayerAttacker : MonoBehaviour
 {
+    [SerializeField] private float criticalDamageMultiplier;
     [SerializeField] private float distanceToBackStab;
     [SerializeField] private float angle;
     [SerializeField] private LayerMask layerDetection;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform criticalStartPoint;
+    private PlayerStats playerStats;
+    private PlayerInventory playerInventory;
     private Vector3 targetDirectionTo;
     private AnimatorManager animatorManager;
     private InputManager inputManager;
@@ -22,6 +26,8 @@ public class PlayerAttacker : MonoBehaviour
     public bool IsHeavy;
     private void Awake()
     {
+        playerStats = GetComponent<PlayerStats>();
+        playerInventory = GetComponent<PlayerInventory>();
         playerManager = GetComponent<PlayerManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
         weaponSlotManager = GetComponent<WeaponSlotManager>();
@@ -31,38 +37,48 @@ public class PlayerAttacker : MonoBehaviour
 
     public void HandleWeaponCombo(Weapon weapon)
     {
-        if (!inputManager.ComboFlag)
+        if (!inputManager.ComboFlag || playerStats.CurrentStamina <=0)
             return;
         animatorManager.animator.SetBool("CanDoCombo", false);
         animatorManager.PlayTargetAnimation(attacks[(++LastAttack)% attacks.Length], true, true);
-        RotationToTarget();
+        RotateToNerbyEnemy();
     }
 
     public void HandleLightAttack(Weapon weapon)
     {
+        if (playerStats.CurrentStamina <= 0)
+            return;
         weaponSlotManager.AttackingWeapon= weapon;
         IsHeavy = false;
         attacks = !inputManager.G || weapon.IsUnarmed ? weapon.LightsAttacks : weapon.TwoHandedAttacks;
         int index = Random.Range(0, attacks.Length);
         string randomAttack = attacks[index];
         LastAttack= index;
-        RotationToTarget();
+        RotateToNerbyEnemy();
         animatorManager.PlayTargetAnimation(randomAttack, true,true);
     }
 
     public void HandleHeavyAttack(Weapon weapon)//by RootMotion use rotation in playerLocomotion
     {
+        if (playerStats.CurrentStamina <= 0)
+            return;
         weaponSlotManager.AttackingWeapon = weapon;
         IsHeavy = true;
         attacks = !inputManager.G || weapon.IsUnarmed ? weapon.HeavyAttacks: weapon.TwoHandedAttacks;
         int index = Random.Range(0, attacks.Length);
         string randomAttack = attacks[index];
         LastAttack = index;
-        RotationToTarget();
+        RotateToNerbyEnemy();
         animatorManager.PlayTargetAnimation(randomAttack, true,true);
     }
 
-    public bool RotationToTarget()
+    public void RotateToNerbyEnemy()
+    {
+        RotationToTarget();
+        transform.rotation = Quaternion.LookRotation( targetDirectionTo);
+    }
+
+    private bool RotationToTarget()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, 5f, layerDetection);
         if (colliders.Length > 0)
@@ -80,8 +96,6 @@ public class PlayerAttacker : MonoBehaviour
                 return false;
             var direction = character.transform.position - transform.position;
             targetDirectionTo = direction.normalized;
-            var rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            playerLocomotion.TargetRotation = rotation;
             return true;
         }
         return false;
@@ -95,10 +109,15 @@ public class PlayerAttacker : MonoBehaviour
             Vector3.Dot(-characterManager.transform.forward, targetDirectionTo) < 0)
         {
             Debug.Log("BackStabInteracting");
-            characterManager.transform.rotation = playerLocomotion.TargetRotation;
+            Weapon weapon = (Weapon)playerInventory.RightWeapon;
+            if (weapon.IsUnarmed)
+                return;
+            transform.rotation = Quaternion.LookRotation((characterManager.transform.position - transform.position).normalized);
+            characterManager.transform.rotation = transform.rotation;
             transform.position = characterManager.BackStabPoint.position;
+            characterManager.GetComponent<CharacterStats>().CriticalDamage = (int)(weapon.Damage*criticalDamageMultiplier);
             animatorManager.PlayTargetAnimation("BackStabAttack",true,true);
-            characterManager.GetComponent<EnemyAnimatorManager>().PlayTargetAnimation("BackStabbed", true);
+            characterManager.GetComponent<CharacterAnimator>().PlayTargetAnimation("BackStabbed", true);
         }
     }
 }

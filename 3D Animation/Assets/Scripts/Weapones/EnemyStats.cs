@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyStats : MonoBehaviour
+public class EnemyStats : CharacterStats
 {
     public int HealthLevel = 10;
     public int MaxHealth;
@@ -27,12 +27,23 @@ public class EnemyStats : MonoBehaviour
         return MaxHealth;
     }
 
-    public void TakeDamage(int damage, bool withInteracting = true)
+    public void TakeCriticalDamage()
+    {
+        TakeDamage(CriticalDamage, true);
+    }
+
+    public void TakeDamage(int damage,bool withoutAnimation = false)
     {
         CurrentHealth -= damage;
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
+            animator.SetBool("IsDead", true);
+        }
+        if (withoutAnimation)
+            return;
+        else if (CurrentHealth == 0)
+        {
             animator.CrossFade("Death",0.2f);
             return;
         }

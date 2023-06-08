@@ -19,8 +19,11 @@ namespace SG
 {
     [CreateAssetMenu(menuName = "Items/Weapon Item")]
     public class Weapon : Item
-    { 
+    {
         public bool IsUnarmed;
+        [Header("Damage Weapon")]
+        [SerializeField]private int damage;
+        public int Damage => damage;
 
         [Header("Attack Animations")]
         public string[] LightsAttacks;
@@ -34,11 +37,6 @@ namespace SG
 
         [Header("Weapon Type")]
         public Casters Caster;
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
 
         public override void Interact(bool isLight)
         {

@@ -41,6 +41,7 @@ public class WeaponSlotManager : MonoBehaviour
 
     public void LoadWeaponOnSlot(Item weaponItem,bool isLeft)
     {
+        Debug.Log(weaponItem);
         QuickSlots.UpdateWeaponQuickSlotsUI(weaponItem);
         if (isLeft)
         {

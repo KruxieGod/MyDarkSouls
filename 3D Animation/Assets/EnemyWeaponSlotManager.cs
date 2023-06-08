@@ -52,6 +52,11 @@ public class EnemyWeaponSlotManager : MonoBehaviour
         else
         {
             rightHandSlot.LoadWeaponModel(weaponItem);
+            if (weaponItem.modelPrefab.transform.GetChild(weaponItem.modelPrefab.transform.childCount-1).TryGetComponent(out DamageCollider damageCollider))
+            {
+                damageCollider.CurrentWeaponDamage = weaponItem.Damage;
+                Debug.Log("Success");
+            }
             #region Handle Right Weapon Idle,Collider Animations
             if (weaponItem != null)
             {

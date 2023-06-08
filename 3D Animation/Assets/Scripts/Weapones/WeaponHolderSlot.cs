@@ -39,6 +39,8 @@ namespace SG
                 return;
             }
             GameObject model = Instantiate(weaponItem.modelPrefab);
+            if (weaponItem.GetType() == typeof(Weapon))
+                model.GetComponentInChildren<DamageCollider>().UploadWeapon((Weapon)weaponItem);
             if (model != null)
             {
                 if (parentOverride != null)

@@ -6,7 +6,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using System.Diagnostics;
 
 public class ScriptScroll : MonoBehaviour
 {
@@ -39,6 +38,7 @@ public class ScriptScroll : MonoBehaviour
     {
         if (item == null || (items != null &&items.ContainsKey(item)))
             return;
+        Debug.Log(item.ItemName);
         if (index == -1)
             index = 0;
         ItemInfoDisplay prefab = Instantiate(Prefab).GetComponent<ItemInfoDisplay>();
@@ -62,7 +62,6 @@ public class ScriptScroll : MonoBehaviour
         interactions[contents[index]].Interact(playerManager);
         Interactable interactable = interactions[contents[index]];
         interactions.Remove(contents[index]);
-        items.Remove(interactable);
         Destroy(contents[index].gameObject);
         contents.RemoveAt(index);
         index = Mathf.Clamp(index, 0, contents.Count - 1);

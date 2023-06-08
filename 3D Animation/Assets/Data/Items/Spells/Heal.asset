@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerId: 95c9068a-25ea-4f09-a858-7bb57ca690bf
   Id: 285cfadb-e8aa-46a1-ab5c-c12d5e1786e8
-  modelPrefab: {fileID: 8408866666079524769, guid: 91258e4fdb5dcad4f8b549947765ec03, type: 3}
+  modelPrefab: {fileID: 4956333204537517925, guid: 44bcc9c24d51b3c49a4ceddb35219e86, type: 3}
   ItemIcon: {fileID: 21300000, guid: 67a3d89b7be255949a523c905a1a6a63, type: 3}
   ItemName: HealBottle
   RightHandIdle: 

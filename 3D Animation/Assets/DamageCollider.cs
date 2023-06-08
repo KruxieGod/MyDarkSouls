@@ -4,8 +4,9 @@ using UnityEngine;
 using SG;
 public class DamageCollider : MonoBehaviour
 {
+    private Weapon weapon;
     Collider damageCollider;
-    public int currentWeaponDamage = 25;
+    public int CurrentWeaponDamage = 25;
     private PlayerAttacker playerAttacker;
 
     private void Awake()
@@ -15,6 +16,11 @@ public class DamageCollider : MonoBehaviour
         damageCollider.gameObject.SetActive(true);
         damageCollider.isTrigger= true;
         damageCollider.enabled = false;
+    }
+
+    public void UploadWeapon(Weapon weapon)
+    {
+        this.weapon = weapon;
     }
 
     public void EnableDamageCollider()
@@ -29,12 +35,13 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // использование isinteracting для того , чтобы объект не мог двигаться
     {
-        if (other.tag == "Player")
+        Debug.Log(other.tag);
+        if (other.tag == "Player" && other.TryGetComponent<InputManager>(out var player) && player.IdPlayer != weapon.PlayerId)
         {
             PlayerStats playerStats = other.GetComponent<PlayerStats>();
             if (playerStats != null && !playerStats.IsInvulnerability)
             {
-                playerStats.TakeDamage(currentWeaponDamage,false);
+                playerStats.TakeDamage(CurrentWeaponDamage,false);
             }
         }
         if (other.tag == "Enemy")
@@ -42,7 +49,7 @@ public class DamageCollider : MonoBehaviour
             EnemyStats enemyStats = other.GetComponent<EnemyStats>();
             if (enemyStats != null)
             {
-                enemyStats.TakeDamage(playerAttacker.IsHeavy? 2*currentWeaponDamage: currentWeaponDamage,false);
+                enemyStats.TakeDamage(playerAttacker.IsHeavy? 2*CurrentWeaponDamage: CurrentWeaponDamage,false);
             }
         }
     }

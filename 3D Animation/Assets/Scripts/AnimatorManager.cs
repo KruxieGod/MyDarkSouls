@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimatorManager : MonoBehaviour
+public class AnimatorManager : CharacterAnimator
 {
+    private PlayerStats playerStats;
     private InputManager inputManager;
     public Animator animator;
     private PlayerManager playerManager;
@@ -13,7 +14,8 @@ public class AnimatorManager : MonoBehaviour
     private int vertical;
     private void Awake()
     {
-        playerInventory = GetComponent<PlayerInventory>();
+        playerStats = GetComponent<PlayerStats>();
+       playerInventory = GetComponent<PlayerInventory>();
         inputManager = GetComponent<InputManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
         playerManager = GetComponent<PlayerManager>();
@@ -22,7 +24,7 @@ public class AnimatorManager : MonoBehaviour
         vertical = Animator.StringToHash("Vertical");
     }
 
-    public void PlayTargetAnimation(string targetAnimation,bool isInteracting, bool useRootMotion = false)
+    public override void PlayTargetAnimation(string targetAnimation, bool useRootMotion = false, bool isInteracting = false, float time = 0)
     {
         animator.SetBool("isInteracting", isInteracting);
         animator.SetBool("IsUsingRootMotion", useRootMotion);
@@ -37,7 +39,7 @@ public class AnimatorManager : MonoBehaviour
         // Animation Snapping
         float snappedHorizontal = HelpedFunc(horizontalMovement);
         float snappedVertical = HelpedFunc(verticalMovement);
-        if (isSprinting && !inputManager.LockOnInput)
+        if (isSprinting && !inputManager.LockOnInput && playerStats.CurrentStamina > 0)
             snappedVertical = 2f;
         float dampTime = animator.GetFloat(vertical) < 0.1f && snappedVertical == 1 ? 0.1f : 0.2f;
         //if ((snappedHorizontal > 0.5 || snappedHorizontal < -0.5 || snappedVertical > 0.5 || snappedVertical < -0.5)
@@ -83,14 +85,12 @@ public class AnimatorManager : MonoBehaviour
     {
         if (playerManager.IsUsingRootMotion && Time.timeScale > 0.1f)
         {
-            Rigidbody rb = GetComponent<Rigidbody>();
-            transform.rotation = playerLocomotion.TargetRotation;
-            //Debug.Break();
-            rb.drag = 0;
+            playerLocomotion.DisableVelocity();
+            CharacterController rb = GetComponent<CharacterController>();
             Vector3 deltaPosition = animator.deltaPosition;
             deltaPosition.y = 0;
-            Vector3 velocity = Time.deltaTime> 0? deltaPosition / Time.deltaTime : Vector3.zero;
-            rb.velocity = velocity;
+            Vector3 velocity = Time.deltaTime> 0? deltaPosition: Vector3.zero;
+            rb.Move(velocity);
         }    
     }
 

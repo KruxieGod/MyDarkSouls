@@ -4,7 +4,7 @@ using UnityEngine;
 using SG;
 using static Models;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : CharacterStats
 {
     public bool IsInvulnerability;
     public PlayerStatistics playerStatistics;
@@ -70,7 +70,7 @@ public class PlayerStats : MonoBehaviour
             animator.PlayTargetAnimation("Death", true,true);
             return;
         }
-        animator.PlayTargetAnimation("Damage", withInteracting? true: playerManager.isInteracting);
+        animator.PlayTargetAnimation("Damage", false,withInteracting? true: playerManager.isInteracting);
     }
 
     public void TakeStaminaDamage(int damage)

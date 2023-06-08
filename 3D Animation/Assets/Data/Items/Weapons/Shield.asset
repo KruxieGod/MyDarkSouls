@@ -12,15 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de7b6fb330f7c8438828029ea75fb1b, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: 
-  ItemIcon: {fileID: 21300000, guid: 95f19099d3e6d904b861c4934c510371, type: 3}
-  ItemName: Shield
+  PlayerId: 
+  Id: 0d2ac4c2-1f5e-45f7-9c11-2a3901636987
   modelPrefab: {fileID: 9002069997187765543, guid: 1548e9d7a5837bb45b858aafa2f95286, type: 3}
-  IsUnarmed: 0
+  ItemIcon: {fileID: 21300000, guid: 97287595b4d7fe34ba878a9490ef87ea, type: 3}
+  ItemName: Shield
   RightHandIdle: 
   LeftHandIdle: LeftArmIdle001
+  IsUnarmed: 0
+  damage: 0
   LightsAttacks: []
   HeavyAttacks: []
   TwoHandedAttacks: []
   BaseStamina: 0
   LightAttackMultiplier: 0
   HeavyAttackMultiplier: 0
+  Caster: 0

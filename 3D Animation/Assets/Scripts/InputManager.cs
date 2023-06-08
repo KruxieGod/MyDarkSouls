@@ -7,7 +7,8 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class InputManager : MonoBehaviour
 {
-    public string IdPlayer = Guid.NewGuid().ToString();
+    private string idPlayer = Guid.NewGuid().ToString();
+    public string IdPlayer => idPlayer;
     public static Dictionary<string, InputManager> Instance = new Dictionary<string, InputManager>();
     public PlayerControls playerControls;
     private AnimatorManager animatorManager;
@@ -172,7 +173,7 @@ public class InputManager : MonoBehaviour
 
     private void HandleDodgeInput()
     {
-        if (Alt && !animatorManager.animator.GetCurrentAnimatorStateInfo(1).IsName("BackStabAttack"))
+        if ( Alt && !animatorManager.animator.GetCurrentAnimatorStateInfo(1).IsName("BackStabAttack"))
         {
             Alt= false;
             playerLocomotion.HandleDodge("Rolling");

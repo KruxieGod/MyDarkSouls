@@ -1,26 +1,48 @@
 using SG;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponPickUp : Interactable
 {
-    public Item weapon;
+    [SerializeField]private Item ItemObject;
+    private GameObject weaponModel;
     public override string ItemName
     {
-        get { return weapon.ItemName; }
+        get { return ItemObject.ItemName; }
         set { ItemName = value; }
     }
 
     public override Sprite ItemIcon
     {
-        get { return weapon.ItemIcon; }
+        get { return ItemObject.ItemIcon; }
         set { ItemIcon = value; }
     }
 
     private void Awake()
     {
-        weapon = Instantiate(weapon);
-        weapon.Id = Guid.NewGuid().ToString(); // создание нового Id
+        ItemObject = Instantiate(ItemObject);
+        weaponModel = Instantiate(ItemObject.modelPrefab.GetComponentInChildren<BoxCollider>().gameObject, transform.position, Quaternion.identity);
+        transform.rotation = UnityEngine.Random.rotation;
+        UploadModelInScene();
+        ItemObject.Id = Guid.NewGuid().ToString(); // создание нового Id
+    }
+
+    private void UploadModelInScene()
+    {
+        Destroy(weaponModel.GetComponent<BoxCollider>());
+        var boxCollider = weaponModel.AddComponent<MeshCollider>();
+        boxCollider.convex = true;
+        var thisBoxCollider = gameObject.AddComponent<MeshCollider>();
+        thisBoxCollider.convex = true;
+        thisBoxCollider.sharedMesh = boxCollider.sharedMesh;
+        Destroy(weaponModel.GetComponent<DamageCollider>());
+        Destroy(weaponModel.GetComponent<MeshCollider>());
+        gameObject.AddComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+        weaponModel.transform.rotation = transform.rotation;
+        weaponModel.transform.parent = transform;
+        transform.localScale = weaponModel.transform.localScale;
+        weaponModel.transform.localScale = Vector3.one;
     }
 
     public override void Interact(PlayerManager playerManager)
@@ -35,13 +57,11 @@ public class WeaponPickUp : Interactable
     {
         PlayerInventory playerInventory = playerManager.GetComponent<PlayerInventory>();
         AnimatorManager animatorManager= playerManager.GetComponent<AnimatorManager>();
-        PlayerLocomotion playerLocomotion = playerManager.GetComponent<PlayerLocomotion>();
 
-        playerLocomotion.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        playerManager.GetComponent<CharacterController>().SimpleMove(Vector3.zero);
         animatorManager.PlayTargetAnimation("Pick Up Item", true,true);
-        weapon.PlayerId = playerManager.GetComponent<InputManager>().IdPlayer;
-        Debug.Log("Collect");
-        playerInventory.WeaponsInventory.Add(weapon);
+        ItemObject.PlayerId = playerManager.GetComponent<InputManager>().IdPlayer;
+        playerInventory.WeaponsInventory.Add(ItemObject);
         Destroy(gameObject);
     }
 }

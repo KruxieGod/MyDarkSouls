@@ -7,6 +7,8 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerManager : CharacterManager
 {
+    [SerializeField] private Vector3 sizeSearchingItems = new Vector3(1,0.5f,1);
+    [SerializeField]private LayerMask itemsMask;
     private Animator animator;
     private InputManager inputManager;
     private CameraManager cameraManager;
@@ -16,6 +18,7 @@ public class PlayerManager : CharacterManager
     [HideInInspector]public bool CanDoCombo;
     [HideInInspector]public bool isInteracting;
     [HideInInspector]public bool IsUsingRootMotion;
+  
     private void Awake()
     {
         scroll = FindObjectOfType<ScriptScroll>();
@@ -29,7 +32,7 @@ public class PlayerManager : CharacterManager
     {
         inputManager.HandleAllInputs();
         TriggerIsHere();
-        //CheckOnCollider();
+        playerLocomotion.HandleRotationUpdate();
     }
 
     private void FixedUpdate()
@@ -50,7 +53,8 @@ public class PlayerManager : CharacterManager
 
     private void TriggerIsHere()
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position + new Vector3(0, 1 / 5f, 0), Vector3.one / 3f, transform.rotation, cameraManager.IgnoreLayers);
+        Collider[] colliders = Physics.OverlapBox(transform.position + new Vector3(0, sizeSearchingItems.y / 2f, 0), sizeSearchingItems, transform.rotation, itemsMask);
+        Debug.Log(colliders.Length);
         if (colliders.Length > 0)
         {
             for (int i = 0; i < colliders.Length; i++)
@@ -59,5 +63,11 @@ public class PlayerManager : CharacterManager
             }
         }
         scroll.Remove(colliders.Select(x => x.GetComponent<Interactable>()), colliders.Length);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(transform.position + new Vector3(0, sizeSearchingItems.y/2f, 0), sizeSearchingItems);
     }
 }

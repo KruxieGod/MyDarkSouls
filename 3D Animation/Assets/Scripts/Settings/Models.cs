@@ -31,8 +31,12 @@ public static class Models
         public float runningSpeed = 5f;
         public float sprintingSpeed = 7f;
         public float rotationSpeed = 15f;
+        [SerializeField]private float speedInAnimation = 300f;
+        public float SpeedInAnimation => speedInAnimation;
 
         [Header("Falling Settings")]
+        [SerializeField]private float gravityModifier;
+        public float GravityModifier => gravityModifier;
         public float LeapingVelocity;
         public float FallingVelocity;
         public LayerMask GroundLayer;

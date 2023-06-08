@@ -18,7 +18,7 @@ public class SleepState : State
         if (enemyManager.SearchTarget())
         {
             Debug.Log("Зашел");
-            enemyAnimatorManager.PlayTargetAnimation("GettingUp",true,0.03f);
+            enemyAnimatorManager.PlayTargetAnimation("GettingUp",true,false,0.03f);
             return TargetState;
         }
         return this;

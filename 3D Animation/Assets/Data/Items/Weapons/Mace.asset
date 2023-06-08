@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de7b6fb330f7c8438828029ea75fb1b, type: 3}
   m_Name: Mace
   m_EditorClassIdentifier: 
-  ItemIcon: {fileID: 21300000, guid: 2b59ae5f4537d0f47953927ff20ea529, type: 3}
-  ItemName: Mace
+  PlayerId: 
+  Id: ba95a096-1ba9-441d-ae0d-988c177807d4
   modelPrefab: {fileID: 6570978232462471972, guid: f66024a193266ff479cd1cdede45aefb, type: 3}
-  IsUnarmed: 0
+  ItemIcon: {fileID: 21300000, guid: 16f0978b905cfa64f97648e0e40387b4, type: 3}
+  ItemName: Mace
   RightHandIdle: RightArmIdle001
   LeftHandIdle: LeftArmIdle001
+  IsUnarmed: 0
+  damage: 25
   LightsAttacks:
   - LightAttack01
   - LightAttack02
@@ -29,3 +32,4 @@ MonoBehaviour:
   BaseStamina: 15
   LightAttackMultiplier: 1
   HeavyAttackMultiplier: 2
+  Caster: 0
