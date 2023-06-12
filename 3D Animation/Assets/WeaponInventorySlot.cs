@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SG;
+using Unity.VisualScripting;
+using System.Linq;
 
 public class WeaponInventorySlot : MonoBehaviour
 {
@@ -40,9 +42,17 @@ public class WeaponInventorySlot : MonoBehaviour
         if (HandEquipmentSlotUI.Action != null && itemOfType.IsSubclassOf(typeof(Item)))
         {
             HandEquipmentSlotUI current;
+            HandEquipmentSlotUI.Action(out current);
+            if (HandEquipmentSlotUI.Group
+                .GetComponentsInChildren<HandEquipmentSlotUI>()
+                .Any(x => x.Item == Item))
+            {
+                Debug.Log("Same Item");
+                HandEquipmentSlotUI.ResetAction();
+                return; 
+            }
             if (itemOfType != typeof(Weapon))
             {
-                HandEquipmentSlotUI.Action(out current);
                 if (current.Index > 1)
                 {
                     Debug.Log("NoWeapon");
@@ -52,7 +62,6 @@ public class WeaponInventorySlot : MonoBehaviour
             }
             else
             {
-                HandEquipmentSlotUI.Action(out current);
                 if (current.Index < 2)
                 {
                     HandEquipmentSlotUI.Action(out current, Item);
@@ -60,6 +69,6 @@ public class WeaponInventorySlot : MonoBehaviour
                 }
             }
         }
-        HandEquipmentSlotUI.Action = null;
+        HandEquipmentSlotUI.ResetAction();
     }
 }

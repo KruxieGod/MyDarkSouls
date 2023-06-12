@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class AnimatorManager : CharacterAnimator
 {
+    public override bool IsStabbing { get { return animator.GetBool("IsParrying"); }}
+    public void SetStabbing() => animator.SetBool("IsParrying", true);
+    public void ResetStabbing() => animator.SetBool("IsParrying", false);
     private PlayerStats playerStats;
     private InputManager inputManager;
     public Animator animator;

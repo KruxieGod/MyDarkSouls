@@ -11,7 +11,7 @@ namespace SG
 {
     public class Item : ScriptableObject
     {
-        public string PlayerId;
+        public CharacterStats CharacterStats;
         public string Id;
         public GameObject modelPrefab;
         [Header("Item Information")]
@@ -31,6 +31,11 @@ namespace SG
 
         }
 
+        public virtual bool IsShield()
+        {
+            return false;
+        }
+
         public override int GetHashCode()
         {
             return Id.GetHashCode();
@@ -41,6 +46,16 @@ namespace SG
             if (obj == null)
                 return false;
             return ItemName == (obj as Item).ItemName;
+        }
+
+        public virtual float GetSofteningBlowInPercent()
+        {
+            return 1f;
+        }
+
+        public virtual ShieldWeapon GetShield()
+        {
+            return new ShieldWeapon();
         }
     }
 }

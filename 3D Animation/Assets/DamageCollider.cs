@@ -6,21 +6,19 @@ public class DamageCollider : MonoBehaviour
 {
     private Weapon weapon;
     Collider damageCollider;
-    public int CurrentWeaponDamage = 25;
-    private PlayerAttacker playerAttacker;
 
     private void Awake()
     {
-        playerAttacker = FindAnyObjectByType<PlayerAttacker>();
         damageCollider = GetComponent<Collider>();
         damageCollider.gameObject.SetActive(true);
         damageCollider.isTrigger= true;
         damageCollider.enabled = false;
     }
 
-    public void UploadWeapon(Weapon weapon)
+    public void UploadWeapon(Weapon weapon,CharacterStats character)
     {
         this.weapon = weapon;
+        weapon.CharacterStats = character;
     }
 
     public void EnableDamageCollider()
@@ -36,21 +34,21 @@ public class DamageCollider : MonoBehaviour
     private void OnTriggerEnter(Collider other) // использование isinteracting для того , чтобы объект не мог двигаться
     {
         Debug.Log(other.tag);
-        if (other.tag == "Player" && other.TryGetComponent<InputManager>(out var player) && player.IdPlayer != weapon.PlayerId)
+        if ((!other.CompareTag("Player") && !other.CompareTag("Enemy")))
+            return;
+        var characterStats = other.GetComponent<CharacterStats>();
+        if (characterStats == weapon.CharacterStats)
+            return;
+        if (characterStats.GetComponent<CharacterAnimator>().IsStabbing)
         {
-            PlayerStats playerStats = other.GetComponent<PlayerStats>();
-            if (playerStats != null && !playerStats.IsInvulnerability)
-            {
-                playerStats.TakeDamage(CurrentWeaponDamage,false);
-            }
+            Debug.Log(weapon.CharacterStats);
+            weapon.CharacterStats.GetComponent<CharacterAnimator>().PlayTargetAnimation("Parried", true);
+            characterStats.TakeStaminaDamage(weapon.Damage);
+            return;
         }
-        if (other.tag == "Enemy")
+        if (!characterStats.IsInvulnerability)
         {
-            EnemyStats enemyStats = other.GetComponent<EnemyStats>();
-            if (enemyStats != null)
-            {
-                enemyStats.TakeDamage(playerAttacker.IsHeavy? 2*CurrentWeaponDamage: CurrentWeaponDamage,false);
-            }
+            characterStats.TakeDamage( (int)((weapon.CharacterStats.IsHeavyAttack ? (int)(weapon.HeavyAttackMultiplier * weapon.Damage) : weapon.Damage)*characterStats.GetSofteningBlowInPercent()), false);
         }
     }
 }

@@ -60,7 +60,7 @@ public class WeaponPickUp : Interactable
 
         playerManager.GetComponent<CharacterController>().SimpleMove(Vector3.zero);
         animatorManager.PlayTargetAnimation("Pick Up Item", true,true);
-        ItemObject.PlayerId = playerManager.GetComponent<InputManager>().IdPlayer;
+        ItemObject.CharacterStats = playerManager.GetComponent<CharacterStats>();
         playerInventory.WeaponsInventory.Add(ItemObject);
         Destroy(gameObject);
     }

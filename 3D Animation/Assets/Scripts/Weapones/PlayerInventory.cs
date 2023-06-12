@@ -4,9 +4,11 @@ using UnityEngine;
 using SG;
 using System;
 using System.Linq;
+using UnityEngine.Purchasing;
 
 public class PlayerInventory : MonoBehaviour
 {
+    private CharacterStats characterStats;
     private InputManager inputManager;
     private Animator animator;
     WeaponSlotManager weaponSlotManager;
@@ -24,14 +26,15 @@ public class PlayerInventory : MonoBehaviour
     public List<Item> WeaponsInventory;
     private void Awake()
     {
+        characterStats = GetComponent<CharacterStats>();
         inputManager = GetComponent<InputManager>();
         animator = GetComponent<Animator>();
         weaponSlotManager = GetComponent<WeaponSlotManager>();
         foreach (var item in WeaponsInventory)
         {
-            item.PlayerId = inputManager.IdPlayer;
+            item.CharacterStats = characterStats;
         }
-        UnarmedWeapon.PlayerId = inputManager.IdPlayer;
+        UnarmedWeapon.CharacterStats = characterStats;
     }
 
     private void Start()

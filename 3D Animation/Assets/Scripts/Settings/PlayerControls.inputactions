@@ -226,6 +226,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "E",
+                    "type": "Button",
+                    "id": "5a0f6642-6896-4ca4-ae1e-aa83431b238c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "de55c281-3d6a-4da4-a5c3-125eaa45d5b2",
@@ -592,6 +601,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "BackStabInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fab6fdf9-f7ec-4ebb-906c-48aacbb7407e",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "E",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

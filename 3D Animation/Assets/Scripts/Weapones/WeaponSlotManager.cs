@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SG;
-public class WeaponSlotManager : MonoBehaviour
+public class WeaponSlotManager : CharacterWeaponHolderSlotManager
 {
     public WeaponHolderSlot leftHandSlot;
     public WeaponHolderSlot rightHandSlot;
@@ -26,6 +26,7 @@ public class WeaponSlotManager : MonoBehaviour
         WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
         foreach (var weaponSlot in weaponHolderSlots)
         {
+            weaponSlot.CharacterStats = playerStats;
             if (weaponSlot.IsLeftHandSlot)
             {
                 leftHandSlot = weaponSlot;
@@ -49,6 +50,8 @@ public class WeaponSlotManager : MonoBehaviour
             #region Handle Left Weapon Idle,Collider Animations
             if (weaponItem != null)
             {
+                if (weaponItem.GetType() != typeof(ShieldWeapon))
+                    animator.CrossFade("Left Arm Empty", 0.2f, animator.GetLayerIndex("Left Arm"));
                 animator.CrossFade(weaponItem.LeftHandIdle, 0.2f);
                 LoadLeftWeaponDamageCollider();
             }
@@ -122,7 +125,7 @@ public class WeaponSlotManager : MonoBehaviour
         leftHandDamageCollider.EnableDamageCollider();
     }
 
-    public void CloseRightHandDamageCollider()
+    public override void CloseRightHandDamageCollider()
     {
         rightHandDamageCollider.DisableDamageCollider();
     }

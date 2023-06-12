@@ -7,6 +7,7 @@ namespace SG
 {
     public class WeaponHolderSlot : MonoBehaviour
     {
+        public CharacterStats CharacterStats;
         public Transform parentOverride;
         public bool IsLeftHandSlot;
         public bool IsRightHandSlot;
@@ -40,7 +41,9 @@ namespace SG
             }
             GameObject model = Instantiate(weaponItem.modelPrefab);
             if (weaponItem.GetType() == typeof(Weapon))
-                model.GetComponentInChildren<DamageCollider>().UploadWeapon((Weapon)weaponItem);
+                model.GetComponentInChildren<DamageCollider>().UploadWeapon((Weapon)weaponItem, CharacterStats);
+            else
+                weaponItem.CharacterStats = CharacterStats;
             if (model != null)
             {
                 if (parentOverride != null)

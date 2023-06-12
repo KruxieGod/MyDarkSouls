@@ -10,9 +10,9 @@ public class QuickSlotsUI : MonoBehaviour
     public Image ParentWeaponIcon;
     private AspectRatioFitter aspect;
 
-    private void Start()
+    private void Awake()
     {
-        aspect = WeaponIcon.GetComponent<AspectRatioFitter>();
+        aspect = WeaponIcon.GetComponentInChildren<AspectRatioFitter>();
     }
 
     public void UpdateWeaponQuickSlotsUI(Item weapon)

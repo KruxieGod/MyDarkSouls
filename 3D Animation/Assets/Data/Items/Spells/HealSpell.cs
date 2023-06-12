@@ -21,10 +21,10 @@ public class HealSpell : SpellItem
     private void AttemptToSpell()
     {
         Debug.Log("Attempt to cast a spell");
-        var animatorManager = InputManager.Instance[PlayerId].GetComponent<AnimatorManager>();
+        var animatorManager = CharacterStats.GetComponent<AnimatorManager>();
         if (animatorManager.animator.GetBool("isInteracting"))
             return;
-        Destroy(Instantiate(SpellWarmUpFX, InputManager.Instance[PlayerId].GetComponent<WeaponSlotManager>().leftHandSlot.transform),0.65f);
+        Destroy(Instantiate(SpellWarmUpFX, CharacterStats.GetComponent<WeaponSlotManager>().leftHandSlot.transform),0.65f);
         animatorManager.PlayTargetAnimation(SpellAnimation,true,true);
         animatorManager.animator.SetBool("IsAttacking", true);
     }
@@ -33,8 +33,8 @@ public class HealSpell : SpellItem
     {
         CountLast--;
         Debug.Log("Successfully Spelled");
-        Destroy(Instantiate(SpellCastFX, InputManager.Instance[PlayerId].GetComponent<WeaponSlotManager>().leftHandSlot.transform),0.5f);
-        InputManager.Instance[PlayerId].GetComponent<PlayerStats>().AddHealth(AmountHealHealth);
+        Destroy(Instantiate(SpellCastFX, CharacterStats.GetComponent<WeaponSlotManager>().leftHandSlot.transform),0.5f);
+        CharacterStats.GetComponent<PlayerStats>().AddHealth(AmountHealHealth);
         Debug.Log("countLost : " + CountLast);
         if (CountLast == 0)
             GameManager.RemoveFromAll(this);

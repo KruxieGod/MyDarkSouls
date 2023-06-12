@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyWeaponSlotManager : MonoBehaviour
+public class EnemyWeaponSlotManager : CharacterWeaponHolderSlotManager
 {
     private WeaponHolderSlot leftHandSlot;
     private WeaponHolderSlot rightHandSlot;
@@ -52,11 +52,7 @@ public class EnemyWeaponSlotManager : MonoBehaviour
         else
         {
             rightHandSlot.LoadWeaponModel(weaponItem);
-            if (weaponItem.modelPrefab.transform.GetChild(weaponItem.modelPrefab.transform.childCount-1).TryGetComponent(out DamageCollider damageCollider))
-            {
-                damageCollider.CurrentWeaponDamage = weaponItem.Damage;
-                Debug.Log("Success");
-            }
+            weaponItem.modelPrefab.GetComponentInChildren<DamageCollider>()?.UploadWeapon(weaponItem,GetComponent<CharacterStats>());
             #region Handle Right Weapon Idle,Collider Animations
             if (weaponItem != null)
             {
@@ -68,20 +64,6 @@ public class EnemyWeaponSlotManager : MonoBehaviour
                 animator.CrossFade("Right Arm Empty", 0.2f);
             }
             #endregion
-        }
-    }
-
-    public void LoadToBack(Weapon weapon, bool upload)
-    {
-        if (upload)
-        {
-            backSlot.LoadWeaponModel(weapon);
-            leftHandSlot.UnloadWeapon();
-        }
-        else
-        {
-            backSlot.UnloadWeaponAndDestroy();
-            leftHandSlot.LoadWeaponModel(weapon);
         }
     }
 
@@ -107,7 +89,7 @@ public class EnemyWeaponSlotManager : MonoBehaviour
         leftHandDamageCollider.EnableDamageCollider();
     }
 
-    public void CloseRightHandDamageCollider()
+    public override void CloseRightHandDamageCollider()
     {
         rightHandDamageCollider.DisableDamageCollider();
     }

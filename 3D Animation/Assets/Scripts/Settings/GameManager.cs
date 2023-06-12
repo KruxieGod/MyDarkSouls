@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     public static void RemoveItemFromInventoryPlayer(Item item)
     {
-        InputManager.Instance[item.PlayerId].GetComponent<PlayerInventory>().RemoveItem(item);
+        item.CharacterStats.GetComponent<PlayerInventory>().RemoveItem(item);
         Debug.Log("Good2");
     }
 }

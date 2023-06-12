@@ -15,6 +15,7 @@ MonoBehaviour:
   AnimationName: LightAttack02
   AttackScore: 3
   RecoveryTime: 5
+  isHeavy: 1
   MaximumAttackAngle: 35
   MinimumAttackAngle: -35
   MinimumAttackDistance: 0

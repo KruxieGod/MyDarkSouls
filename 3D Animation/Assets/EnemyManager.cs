@@ -4,16 +4,18 @@ using UnityEngine;
 using SG;
 using UnityEngine.AI;
 using System.Linq;
+using System;
 
 public class EnemyManager : CharacterManager
 {
+    public override bool IsParried { get { return enemyAnimatorManager.Animator.GetBool("IsParried"); } }
     private EnemyStats enemyStats;
     public State CurrentState;
     private EnemyLocomotion enemyLocomotion;
     private EnemyAnimatorManager enemyAnimatorManager;
     public EnemyAttackAction[] EnemyAttackActions;
-    public EnemyAttackAction CurrentAttackAction;
-    public Coroutine RecoverCoroutine;
+    private Dictionary<int,Coroutine> recoveryAttacks= new Dictionary<int,Coroutine>();
+    public Tuple<EnemyAttackAction,int> CurrentAttackAction { get; private set; }
     public bool IsUsingRootMotion { get { return enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion"); } }
     private void Start()
     {
@@ -29,6 +31,10 @@ public class EnemyManager : CharacterManager
 
     private void Update()
     {
+        foreach (var item in recoveryAttacks)
+        {
+            Debug.Log("Dictionary key: "+ item.Key +" "+ item.Value);
+        }
         HandleStateMachine();
     }
 
@@ -51,19 +57,29 @@ public class EnemyManager : CharacterManager
 
     public bool GetAttack()
     {
-        if (RecoverCoroutine != null ||
-            enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion"))
+        if ((enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion")&&!enemyAnimatorManager.CanDoCombo) || enemyAnimatorManager.IsComboing)
             return false;
+        if (enemyAnimatorManager.CanDoCombo)
+        {
+            enemyAnimatorManager.CanDoCombo = false;
+            enemyAnimatorManager.IsComboing = true;
+        }
+        var excludedAttacks = EnemyAttackActions
+            .Where(
+            (x,index) => !recoveryAttacks.ContainsKey(index) || recoveryAttacks[index] == null)
+            .ToArray();
+        if (excludedAttacks.Length == 0)
+            return false;
+        var index = UnityEngine.Random.Range(0, excludedAttacks.Length);
+        EnemyAttackAction attack = excludedAttacks[index];
         Vector3 targetDirection = enemyLocomotion.CharacterManager.transform.position - transform.position;
         float viewAngle = Vector3.Angle(transform.forward, targetDirection);
-        EnemyAttackAction attack = EnemyAttackActions[Random.Range(0, EnemyAttackActions.Length)];
         if (targetDirection.magnitude <= attack.MaximumAttackDistance &&
             targetDirection.magnitude >= attack.MinimumAttackDistance &&
-            RecoverCoroutine == null &&
             viewAngle <= enemyLocomotion.Angle)
         {
             Debug.Log("Attack");
-            CurrentAttackAction = attack;
+            CurrentAttackAction = new (attack, index);
             return true;
         }
         else 
@@ -73,21 +89,19 @@ public class EnemyManager : CharacterManager
 
     public void PlayAttack()
     {
-        if (CurrentAttackAction == null)
+        if ((recoveryAttacks.ContainsKey(CurrentAttackAction.Item2) && recoveryAttacks[CurrentAttackAction.Item2] != null) || 
+            enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion"))
             return;
-        if (enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion"))
-            return;
-        if (RecoverCoroutine != null)
-            return;
-        enemyAnimatorManager.PlayTargetAnimation(CurrentAttackAction.AnimationName,true);
-        RecoverCoroutine = StartCoroutine(RecoveryTimer(CurrentAttackAction.RecoveryTime));
+        Debug.Log("HEISATTACKING");
+        enemyAnimatorManager.PlayTargetAnimation(CurrentAttackAction.Item1.AnimationName,true);
+        recoveryAttacks[CurrentAttackAction.Item2] = StartCoroutine(
+            RecoveryTimer(CurrentAttackAction.Item2, CurrentAttackAction.Item1.RecoveryTime));
     }
 
-    private IEnumerator RecoveryTimer(float time)
+    private IEnumerator RecoveryTimer(int index,float time)
     {
-        Debug.Log(time);
         yield return new WaitForSeconds(time);
-        RecoverCoroutine = null;
+        recoveryAttacks[index] = null;
     }
 
     public bool SearchTarget()
@@ -110,5 +124,10 @@ public class EnemyManager : CharacterManager
                 return true;
         }
         return false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Вошел в коллайдер");
     }
 }

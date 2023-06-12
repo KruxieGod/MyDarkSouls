@@ -8,6 +8,8 @@ public class EnemyAttackAction : EnemyAction
 {
     public int AttackScore = 3;
     public float RecoveryTime = 2;
+    [SerializeField] private bool isHeavy = false;
+    public bool IsHeavy => isHeavy; 
 
     public float MaximumAttackAngle = 35;
     public float MinimumAttackAngle = -35;

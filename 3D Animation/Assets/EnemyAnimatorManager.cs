@@ -5,6 +5,13 @@ using UnityEngine.AI;
 
 public class EnemyAnimatorManager : CharacterAnimator
 {
+    public bool IsComboing { get { return Animator.GetBool("IsComboing"); } set { Animator.SetBool("IsComboing",value); } }
+    public bool CanDoCombo { get { return Animator.GetBool("CanDoCombo"); } set { Animator.SetBool("CanDoCombo", value); } }
+    public void EnableCombo() => Animator.SetBool("CanDoCombo",true);
+    public void DisableCombo() { Animator.SetBool("IsComboing", false); }
+    public bool IsUsingRootMotion => Animator.GetBool("IsUsingRootMotion");
+    [SerializeField] private GameObject particlesAfterDeath;
+    public GameObject ParticlesAfterDeath => particlesAfterDeath;
     public Animator Animator;
     private EnemyLocomotion enemyLocomotion;
     private EnemyStats enemyStats;
@@ -13,6 +20,12 @@ public class EnemyAnimatorManager : CharacterAnimator
         enemyStats = GetComponent<EnemyStats>();
         enemyLocomotion = GetComponent<EnemyLocomotion>();
         Animator = GetComponent<Animator>();
+    }
+
+    public void AddAndSpawnSouls()
+    {
+        Destroy(Instantiate(particlesAfterDeath, transform.position, Quaternion.identity),10f);
+        FindObjectOfType<PlayerStats>().AddSouls(enemyStats);
     }
 
     private void LateUpdate()

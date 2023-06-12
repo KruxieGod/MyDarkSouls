@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7153812759228329368}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 56860139690821411}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,6 +75,10 @@ PrefabInstance:
     - target: {fileID: 1558266794744208, guid: 2288ccb479ddbc249bd87ff109381d68, type: 3}
       propertyPath: m_Name
       value: SM_Wep_Shield_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1558266794744208, guid: 2288ccb479ddbc249bd87ff109381d68, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4514087604140256, guid: 2288ccb479ddbc249bd87ff109381d68, type: 3}
       propertyPath: m_RootOrder

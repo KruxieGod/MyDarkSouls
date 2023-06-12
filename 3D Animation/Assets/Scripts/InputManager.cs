@@ -7,6 +7,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class InputManager : MonoBehaviour
 {
+    CharacterStats characterStats;
     private string idPlayer = Guid.NewGuid().ToString();
     public string IdPlayer => idPlayer;
     public static Dictionary<string, InputManager> Instance = new Dictionary<string, InputManager>();
@@ -19,7 +20,9 @@ public class InputManager : MonoBehaviour
     private UIManager uiManager;
     private CameraManager cameraManager;
 
-    private bool isRightClick;
+    private bool eIsPressed;
+    private float timePressedE = 0f;
+    private bool isRightClick { get; set; }
     private Vector2 movementInput;
     private Vector2 cameraInput;
     public bool Alt;
@@ -65,6 +68,7 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        characterStats = GetComponent<CharacterStats>();
         Instance.Add(IdPlayer,this);
         cameraManager = FindObjectOfType<CameraManager>();
         uiManager = FindObjectOfType<UIManager>();
@@ -88,13 +92,24 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Arrows.started+= i => StartCoroutine(WaitEndOfFrame(i.ReadValue<float>()));
             playerControls.PlayerActions.ArrowsDownUp.started += i => StartCoroutine(WaitEndOfFrameDown(i.ReadValue<float>()));
             playerControls.PlayerActions.Alt.performed += i => Alt = true;
-            playerControls.PlayerActions.RightClick.performed += i => isRightClick = true;
-            playerControls.PlayerActions.RightClick.canceled += i => isRightClick = false;
+            playerControls.PlayerActions.RightClick.started += i => { if (!animatorManager.animator.GetBool("IsAttacking"))
+                {
+                    isRightClick = true; 
+                    HandleRightClick();
+                }
+            };
+            playerControls.PlayerActions.RightClick.canceled += i => { if (!animatorManager.animator.GetBool("IsAttacking") && isRightClick)
+                {
+                    HandleRightClick();
+                    isRightClick = false;
+                }
+            }; 
             playerControls.PlayerActions.Jump.performed += i => IsJump = true;
             playerControls.PlayerActions.BackStabInput.performed += i => BackStabInput();
             playerControls.PlayerActions.LightAttack.performed += i => AttackInput(true);
             playerControls.PlayerActions.HeavyAttack.performed += i => AttackInput(false);
-
+            playerControls.PlayerActions.E.performed += i => timePressedE+= 0.1f;
+            playerControls.PlayerActions.E.canceled += i => timePressedE = 0f;
             playerControls.PlayerActions.Scroll.performed += i => axisScroll = i.ReadValue<float>();
         }
         playerControls.Enable();
@@ -104,6 +119,20 @@ public class InputManager : MonoBehaviour
     {
         playerControls.PlayerActions.BackStabInput.Reset();
         playerAttacker.AttemptToBackStabAttack();
+    }
+
+    private void ParryInput()
+    {
+        if (playerControls.PlayerActions.E.WasPerformedThisFrame() || eIsPressed)
+        {
+            eIsPressed = true;
+            if (timePressedE == 0f)
+            {
+                playerAttacker.AttemptToParryAttack();
+                eIsPressed = false;
+                playerControls.PlayerActions.E.Reset();
+            }
+        }
     }
 
     private IEnumerator WaitEndOfFrame(float i)
@@ -136,6 +165,7 @@ public class InputManager : MonoBehaviour
 
     public void HandleAllInputs()
     {
+        ParryInput();
         HandleQuickSlotsInput();
         HandleJumpingInput();
         HandleMovementInput();
@@ -144,7 +174,17 @@ public class InputManager : MonoBehaviour
         HandleInventoryInput();
         HandleLockOn();
         HandleLockOnInput();
-        if (isRightClick && !animatorManager.animator.GetBool("IsAttacking"))
+    }
+
+    private void HandleRightClick()
+    {
+        if (playerManager.isInteracting)
+        {
+            UnBlock();
+            ResetInputRightClick();
+            return;
+        }
+        if (isRightClick && !animatorManager.animator.GetBool("IsAttacking") && playerInventory.LeftWeapon.GetType() != typeof(Weapon) )
             playerInventory.LeftWeapon.Interact();
     }
 
@@ -175,7 +215,9 @@ public class InputManager : MonoBehaviour
     {
         if ( Alt && !animatorManager.animator.GetCurrentAnimatorStateInfo(1).IsName("BackStabAttack"))
         {
-            Alt= false;
+            UnBlock();
+            ResetInputRightClick();
+            Alt = false;
             playerLocomotion.HandleDodge("Rolling");
         }
     }
@@ -185,7 +227,20 @@ public class InputManager : MonoBehaviour
         if (playerManager.isInteracting && !playerManager.CanDoCombo)
             return;
         Debug.Log("ATTACK");
-        playerInventory.RightWeapon.Interact(isLight);    
+        UnBlock();
+        ResetInputRightClick();
+        playerInventory.RightWeapon.Interact(isLight);
+    }
+
+    private void UnBlock()
+    {
+        if (playerInventory.LeftWeapon.IsShield() && playerInventory.LeftWeapon.GetShield().isBlocking)
+            playerInventory.LeftWeapon.Interact();
+    }
+
+    private void ResetInputRightClick()
+    {
+        isRightClick = false;
     }
 
     public void WeaponAttack(bool isLight, Weapon weapon)

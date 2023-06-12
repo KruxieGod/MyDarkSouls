@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4834726579031249542}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7984785196211824800}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ItemRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,6 +75,10 @@ PrefabInstance:
     - target: {fileID: 1544097999410878, guid: 744f4afb558cf6742b975ec44039ed93, type: 3}
       propertyPath: m_Name
       value: SM_Item_Ring_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1544097999410878, guid: 744f4afb558cf6742b975ec44039ed93, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4876432708512450, guid: 744f4afb558cf6742b975ec44039ed93, type: 3}
       propertyPath: m_RootOrder

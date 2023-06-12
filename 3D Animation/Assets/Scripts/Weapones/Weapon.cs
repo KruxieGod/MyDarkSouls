@@ -40,7 +40,7 @@ namespace SG
 
         public override void Interact(bool isLight)
         {
-            InputManager.Instance[PlayerId].WeaponAttack(isLight,this);
+            CharacterStats.GetComponent<InputManager>().WeaponAttack(isLight,this);
         }
     }
 }

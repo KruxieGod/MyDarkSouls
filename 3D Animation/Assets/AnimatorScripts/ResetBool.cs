@@ -15,5 +15,7 @@ public class ResetBool : StateMachineBehaviour
         animator.SetBool("IsAttacking", false);
         animator.SetBool(isInteractingBool, isInteractingStatus);
         animator.SetBool(IsUsingRootMotionBool, isUsingRootMotionStatus);
+        animator.GetComponent<PlayerLocomotion>().DisableRotation();
+        animator.SetBool("IsParrying", false);
     }
 }

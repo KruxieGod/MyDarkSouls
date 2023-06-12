@@ -12,16 +12,21 @@ public class HandEquipmentSlotUI : MonoBehaviour
     public Image Icon;
     public Item Item;
     public delegate void WeaponAction(out HandEquipmentSlotUI gameObj, Item newWeapon = null);
-    public static WeaponAction Action;
+    public static WeaponAction Action { get; private set; }
     public int Index = 0;
-    private static GridLayoutGroup group;
+    public static GridLayoutGroup Group;
+
+    public static void ResetAction()
+    {
+        Action = null;
+    }
 
     private void Awake()
     {
         Debug.Log("Bye");
-        if (group == null)
-            group = FindObjectsOfType<GridLayoutGroup>().First(x => x.name == "UI Background");
-        group.GetComponentsInChildren<HandEquipmentSlotUI>().FirstOrDefault(x => {
+        if (Group == null)
+            Group = FindObjectsOfType<GridLayoutGroup>().First(x => x.name == "UI Background");
+        Group.GetComponentsInChildren<HandEquipmentSlotUI>().FirstOrDefault(x => {
             if (x.transform == this.transform)
                 return true;
             Index++;

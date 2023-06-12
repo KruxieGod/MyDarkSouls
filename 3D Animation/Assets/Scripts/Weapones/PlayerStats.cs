@@ -6,7 +6,10 @@ using static Models;
 
 public class PlayerStats : CharacterStats
 {
-    public bool IsInvulnerability;
+    private PlayerAttacker playerAttacker;
+    public override bool IsHeavyAttack => playerAttacker.IsHeavy;
+    public int SoulsAmount { get; private set; }
+    public override bool IsInvulnerability { get; protected set; }
     public PlayerStatistics playerStatistics;
 
     public int MaxHealth;
@@ -17,14 +20,18 @@ public class PlayerStats : CharacterStats
 
     private AnimatorManager animator;
     private PlayerManager playerManager;
-
+    private PlayerInventory playerInventory;
     public HealthBar healthBar;
     public StaminaBar staminaBar;
     private float time = 0;
     private Coroutine energyRechargeCorountine = null;
     public float energyRecharge;
+    private SoulsBar soulsBar;
     private void Awake()
     {
+        playerInventory = GetComponent<PlayerInventory>();  
+        playerAttacker = GetComponent<PlayerAttacker>();    
+        soulsBar = FindObjectOfType<SoulsBar>();
         healthBar = FindObjectOfType<HealthBar>();
         staminaBar = FindObjectOfType<StaminaBar>();
         playerManager = GetComponent<PlayerManager>();
@@ -40,6 +47,13 @@ public class PlayerStats : CharacterStats
         MaxHealth = SetMaxHealthFromHealthLevel();
         CurrentHealth = MaxHealth;
         healthBar.SetMaxHealth(MaxHealth);
+    }
+
+    public void AddSouls(EnemyStats enemyStats)
+    {
+        SoulsAmount += enemyStats.SoulsCount;
+        ISoulsBar soulsbar = soulsBar;
+        soulsbar.SetSouls(SoulsAmount);
     }
 
     private int SetMaxStaminaFromStaminaLevel()
@@ -60,7 +74,7 @@ public class PlayerStats : CharacterStats
         healthBar.SetCurrentHealth(CurrentHealth);
     }
 
-    public void TakeDamage(int damage,bool withInteracting = true) 
+    public override void TakeDamage(int damage,bool withInteracting = true) 
     {
         CurrentHealth -= damage;
         healthBar.SetCurrentHealth(CurrentHealth);
@@ -73,7 +87,7 @@ public class PlayerStats : CharacterStats
         animator.PlayTargetAnimation("Damage", false,withInteracting? true: playerManager.isInteracting);
     }
 
-    public void TakeStaminaDamage(int damage)
+    public override void TakeStaminaDamage(int damage)
     {
         CurrentStamina-= damage;
         CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina);
@@ -115,4 +129,14 @@ public class PlayerStats : CharacterStats
     {
         IsInvulnerability = false;
     }
+
+    public override float GetSofteningBlowInPercent()
+    {
+        return playerInventory.LeftWeapon.GetSofteningBlowInPercent();
+    }
+}
+
+internal interface ISoulsBar
+{
+    internal void SetSouls(int count);
 }

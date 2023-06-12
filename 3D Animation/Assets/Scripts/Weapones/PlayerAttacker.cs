@@ -74,11 +74,10 @@ public class PlayerAttacker : MonoBehaviour
 
     public void RotateToNerbyEnemy()
     {
-        RotationToTarget();
-        transform.rotation = Quaternion.LookRotation( targetDirectionTo);
+        RotationToTarget(true);
     }
 
-    private bool RotationToTarget()
+    private bool RotationToTarget(bool onTarget = false)
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, 5f, layerDetection);
         if (colliders.Length > 0)
@@ -96,6 +95,8 @@ public class PlayerAttacker : MonoBehaviour
                 return false;
             var direction = character.transform.position - transform.position;
             targetDirectionTo = direction.normalized;
+            if (onTarget)
+                transform.rotation = Quaternion.LookRotation(targetDirectionTo);
             return true;
         }
         return false;
@@ -105,19 +106,43 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (RotationToTarget() && 
             Physics.Raycast(criticalStartPoint.position, targetDirectionTo, out var hit, distanceToBackStab, layerDetection) &&
-            hit.collider.TryGetComponent<CharacterManager>(out var characterManager) &&
-            Vector3.Dot(-characterManager.transform.forward, targetDirectionTo) < 0)
+            hit.collider.TryGetComponent<CharacterManager>(out var characterManager))
         {
             Debug.Log("BackStabInteracting");
             Weapon weapon = (Weapon)playerInventory.RightWeapon;
             if (weapon.IsUnarmed)
                 return;
             transform.rotation = Quaternion.LookRotation((characterManager.transform.position - transform.position).normalized);
-            characterManager.transform.rotation = transform.rotation;
-            transform.position = characterManager.BackStabPoint.position;
+            string enemyStabbed;
+            string attackerStabbed;
+            if (Vector3.Dot(-characterManager.transform.forward, targetDirectionTo) < 0)
+            {
+                characterManager.transform.rotation = transform.rotation;
+                transform.position = characterManager.BackStabPoint.position;
+                enemyStabbed = "BackStabbed";
+                attackerStabbed = "BackStabAttack";
+            }
+            else if (characterManager.IsParried)
+            {
+                characterManager.transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 180, 0));
+                transform.position = characterManager.ForwardStabPoint.position;
+                enemyStabbed = "ForwardStabbed";
+                attackerStabbed = "ForwardStabAttack";
+            }
+            else
+                return;
             characterManager.GetComponent<CharacterStats>().CriticalDamage = (int)(weapon.Damage*criticalDamageMultiplier);
-            animatorManager.PlayTargetAnimation("BackStabAttack",true,true);
-            characterManager.GetComponent<CharacterAnimator>().PlayTargetAnimation("BackStabbed", true);
+            animatorManager.PlayTargetAnimation(attackerStabbed, true,true);
+            characterManager.GetComponent<CharacterAnimator>().PlayTargetAnimation(enemyStabbed, true);
+        }
+    }
+
+    public void AttemptToParryAttack()
+    {
+        if (!animatorManager.IsStabbing && playerInventory.LeftWeapon.IsShield() && !playerManager.isInteracting && playerStats.CurrentStamina > 0)
+        {
+            animatorManager.PlayTargetAnimation("Parry", true,true);
+            animatorManager.SetStabbing();
         }
     }
 }

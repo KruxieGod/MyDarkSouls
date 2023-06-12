@@ -67,6 +67,7 @@ public class ScriptScroll : MonoBehaviour
         index = Mathf.Clamp(index, 0, contents.Count - 1);
         if (index != -1)
             contents[index].GetComponent<Image>().color= Color.yellow;
+        CalculateDistance(20);
     }
 
     public void Remove(IEnumerable<Interactable> colliders, int length)
@@ -93,11 +94,13 @@ public class ScriptScroll : MonoBehaviour
             index = -1;
         else
             index = Mathf.Clamp(index, 0, contents.Count - 1);
+        foreach (var item in contents)
+            item.GetComponent<Image>().color = Color.red;
         if (index != -1)
         {
             contents[index].GetComponent<Image>().color = Color.yellow;
         }
-
+        CalculateDistance(20);
     }
 
     void Update()
@@ -112,7 +115,7 @@ public class ScriptScroll : MonoBehaviour
             index++;
             index = Mathf.Clamp(index, 0, contents.Count - 1);
             contents[index].GetComponent<Image>().color = Color.yellow;
-            CalculateDistance();
+            CalculateDistance(1);
         }
         else if (inputManager.ScrollUp)
         {
@@ -120,16 +123,17 @@ public class ScriptScroll : MonoBehaviour
             index--;
             index = Mathf.Clamp(index, 0, contents.Count - 1);
             contents[index].GetComponent<Image>().color = Color.yellow;
-            CalculateDistance();
+            CalculateDistance(1);
         }
     }
 
     private void CalculateDistance(float d=0)
     {
-        if (contents.Count < 3)
+        if (index == -1)
             return;
         RectTransform rectCurrent = contents[index].GetComponent<RectTransform>();
         float selectedPosition = rectCurrent.position.y;
+        Debug.Log(rectCurrent.position.y);
         float halfSize = rectCurrent.rect.size.y / 2f;
         if ((selectedPosition + halfSize+ d) - medianaPosition > halfLengthPanel)
         {
