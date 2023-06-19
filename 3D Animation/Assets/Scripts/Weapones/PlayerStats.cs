@@ -31,7 +31,6 @@ public class PlayerStats : CharacterStats
         playerInventory = GetComponent<PlayerInventory>();  
         playerAttacker = GetComponent<PlayerAttacker>();    
         soulsBar = FindObjectOfType<SoulsBar>();
-        healthBar = FindObjectOfType<UIManager>().GetComponentInChildren<HealthBar>();
         staminaBar = FindObjectOfType<StaminaBar>();
         playerManager = GetComponent<PlayerManager>();
         animator = GetComponent<AnimatorManager>();
@@ -39,6 +38,8 @@ public class PlayerStats : CharacterStats
 
     void Start()
     {
+        healthBar = FindObjectOfType<UIManager>().GetComponentInChildren<HealthBar>();
+        healthBar.Initialize();
         MaxStamina = SetMaxStaminaFromStaminaLevel();
         CurrentStamina = MaxStamina;
         staminaBar.SetMaxStamina(CurrentStamina);

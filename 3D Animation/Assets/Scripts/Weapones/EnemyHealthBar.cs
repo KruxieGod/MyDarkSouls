@@ -14,7 +14,7 @@ public class EnemyHealthBar : HealthBar
     [SerializeField] private float maxTime;
     private float recoveryShowHealthBar;
 
-    private void Awake()
+    internal override void Initialize()
     {
         slider = GetComponentInChildren<Slider>();
         rectTransform = slider.GetComponent<RectTransform>();
@@ -24,6 +24,8 @@ public class EnemyHealthBar : HealthBar
 
     private void FixedUpdate()
     {
+        if (slider == null)
+            return;
         if (recoveryShowHealthBar <=0)
             slider.gameObject.SetActive(false);
         else

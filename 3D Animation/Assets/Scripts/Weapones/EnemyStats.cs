@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyStats : CharacterStats
 {
     [SerializeField] private float speedCollision;
     private IHealthBar healthBar;
+    public Func<IHealthBar> UpdateHealthBar;
     public override bool IsInvulnerability { get => animator.GetBool("IsInvulnerability"); protected set => IsInvulnerability = value; }
     private EnemyManager enemyManager;
     public override bool IsHeavyAttack { get { if (enemyManager.CurrentAttackAction.Item1 != null) return enemyManager.CurrentAttackAction.Item1.IsHeavy;
@@ -20,12 +23,22 @@ public class EnemyStats : CharacterStats
 
     private void Awake()
     {
-        healthBar = transform.GetComponentInChildren<EnemyHealthBar>();
         enemyManager = GetComponent<EnemyManager>();
         animator = GetComponent<Animator>();
+    }
+
+    public void InitializeEvents()
+    {
         MaxHealth = SetMaxHealthFromHealthLevel();
         CurrentHealth = MaxHealth;
+        healthBar = UpdateHealthBar();
+        healthBar.Initialize();
         healthBar.SetMaxHealth(CurrentHealth);
+    }
+
+    public void SetName(string name)
+    {
+        healthBar.SetName(name);
     }
 
     private int SetMaxHealthFromHealthLevel()
