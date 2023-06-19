@@ -185,7 +185,11 @@ public class InputManager : MonoBehaviour
             return;
         }
         if (isRightClick && !animatorManager.animator.GetBool("IsAttacking") && playerInventory.LeftWeapon.GetType() != typeof(Weapon) )
+        {
             playerInventory.LeftWeapon.Interact();
+            if (playerInventory.LeftWeapon.IsSpell())
+                isRightClick= false;
+        }
     }
 
     private void HandleMovementInput()
@@ -264,7 +268,7 @@ public class InputManager : MonoBehaviour
 
     private void HandleQuickSlotsInput()
     {
-        if (animatorManager.animator.GetBool("IsAttacking"))
+        if (animatorManager.animator.GetBool("IsAttacking") || isRightClick)
             return;
         if (axisScroll != 0)
             playerInventory.ChangeRightWeapon();

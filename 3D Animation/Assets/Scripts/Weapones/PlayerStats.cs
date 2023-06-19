@@ -13,7 +13,6 @@ public class PlayerStats : CharacterStats
     public PlayerStatistics playerStatistics;
 
     public int MaxHealth;
-    public int CurrentHealth;
 
     public int MaxStamina;
     public int CurrentStamina;
@@ -21,7 +20,7 @@ public class PlayerStats : CharacterStats
     private AnimatorManager animator;
     private PlayerManager playerManager;
     private PlayerInventory playerInventory;
-    public HealthBar healthBar;
+    private IHealthBar healthBar;
     public StaminaBar staminaBar;
     private float time = 0;
     private Coroutine energyRechargeCorountine = null;
@@ -32,7 +31,7 @@ public class PlayerStats : CharacterStats
         playerInventory = GetComponent<PlayerInventory>();  
         playerAttacker = GetComponent<PlayerAttacker>();    
         soulsBar = FindObjectOfType<SoulsBar>();
-        healthBar = FindObjectOfType<HealthBar>();
+        healthBar = FindObjectOfType<UIManager>().GetComponentInChildren<HealthBar>();
         staminaBar = FindObjectOfType<StaminaBar>();
         playerManager = GetComponent<PlayerManager>();
         animator = GetComponent<AnimatorManager>();
@@ -76,7 +75,8 @@ public class PlayerStats : CharacterStats
 
     public override void TakeDamage(int damage,bool withInteracting = true) 
     {
-        CurrentHealth -= damage;
+        base.TakeDamage(damage);
+
         healthBar.SetCurrentHealth(CurrentHealth);
         if (CurrentHealth <= 0)
         {
@@ -84,7 +84,7 @@ public class PlayerStats : CharacterStats
             animator.PlayTargetAnimation("Death", true,true);
             return;
         }
-        animator.PlayTargetAnimation("Damage", false,withInteracting? true: playerManager.isInteracting);
+        animator.PlayTargetAnimation(playerInventory.LeftWeapon.DamageAnimation, false,withInteracting? true: playerManager.isInteracting);
     }
 
     public override void TakeStaminaDamage(int damage)

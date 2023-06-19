@@ -38,7 +38,6 @@ public class ScriptScroll : MonoBehaviour
     {
         if (item == null || (items != null &&items.ContainsKey(item)))
             return;
-        Debug.Log(item.ItemName);
         if (index == -1)
             index = 0;
         ItemInfoDisplay prefab = Instantiate(Prefab).GetComponent<ItemInfoDisplay>();
@@ -133,7 +132,6 @@ public class ScriptScroll : MonoBehaviour
             return;
         RectTransform rectCurrent = contents[index].GetComponent<RectTransform>();
         float selectedPosition = rectCurrent.position.y;
-        Debug.Log(rectCurrent.position.y);
         float halfSize = rectCurrent.rect.size.y / 2f;
         if ((selectedPosition + halfSize+ d) - medianaPosition > halfLengthPanel)
         {

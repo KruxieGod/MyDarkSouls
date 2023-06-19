@@ -12,25 +12,25 @@ public class PlayerInventory : MonoBehaviour
     private InputManager inputManager;
     private Animator animator;
     WeaponSlotManager weaponSlotManager;
-    public Item RightWeapon;
-    public Item LeftWeapon;
-    public Item UnarmedWeapon;
+    public AttackingItem RightWeapon;
+    public AttackingItem LeftWeapon;
+    public AttackingItem UnarmedWeapon;
 
-    public Item[] WeaponsInRightHandSlots = new Item[1];
-    public Item[] WeaponsInLeftHandSlots = new Item[1];
-    public Item[] DoubleWeapons = new Item[1];
+    public AttackingItem[] WeaponsInRightHandSlots = new AttackingItem[1];
+    public AttackingItem[] WeaponsInLeftHandSlots = new AttackingItem[1];
+    public AttackingItem[] DoubleWeapons = new AttackingItem[1];
 
     private int currentRightWeaponIndex = -1;
     private int currentLeftWeaponIndex = -1;
 
-    public List<Item> WeaponsInventory;
+    public List<Item> Inventory;
     private void Awake()
     {
         characterStats = GetComponent<CharacterStats>();
         inputManager = GetComponent<InputManager>();
         animator = GetComponent<Animator>();
         weaponSlotManager = GetComponent<WeaponSlotManager>();
-        foreach (var item in WeaponsInventory)
+        foreach (var item in Inventory)
         {
             item.CharacterStats = characterStats;
         }
@@ -47,7 +47,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void ChangeRightWeapon()
     {
-        Action<Item> action = x => {
+        Action<AttackingItem> action = x => {
             RightWeapon = x;
         weaponSlotManager.LoadWeaponOnSlot(RightWeapon, false);
         };
@@ -58,20 +58,18 @@ public class PlayerInventory : MonoBehaviour
     {
         if (inputManager.G)
             return;
-        Action<Item> action = x => {
+        Action<AttackingItem> action = x => {
             LeftWeapon = x;
             weaponSlotManager.LoadWeaponOnSlot(LeftWeapon, true);
         };
         ChangeWeapon(ref currentLeftWeaponIndex,WeaponsInLeftHandSlots, action);
     }
 
-    private void ChangeWeapon(ref int index, Item[] inventory,Action<Item> action) // передаем делегат действия , чтобы присвоить оружию нужную сторону.
+    private void ChangeWeapon(ref int index, AttackingItem[] inventory,Action<AttackingItem> action) // передаем делегат действия , чтобы присвоить оружию нужную сторону.
     {
         index++;
-        Debug.Log(inventory.Length);
         for (; index < inventory.Length; index++)
         {
-            Debug.Log("index :" + index);
             if (inventory[index] != null)
             {
                 action(inventory[index]);
@@ -106,7 +104,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void RemoveItem(Item item)
     {
-        WeaponsInventory.Remove(item);
+        Inventory.Remove(item);
         var indexRight = Array.IndexOf(WeaponsInRightHandSlots, item);
         if (indexRight != -1)
         {

@@ -180,7 +180,6 @@ public class CameraManager : MonoBehaviour
 
     public void ClearLockOnTarget()
     {
-        Debug.Log("кеее");
         CurrentLockOnTarget= null;
         NearestLockOnTarget= null;
     }

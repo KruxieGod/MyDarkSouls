@@ -40,9 +40,8 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
         }
     }
 
-    public void LoadWeaponOnSlot(Item weaponItem,bool isLeft)
+    public void LoadWeaponOnSlot(AttackingItem weaponItem,bool isLeft)
     {
-        Debug.Log(weaponItem);
         QuickSlots.UpdateWeaponQuickSlotsUI(weaponItem);
         if (isLeft)
         {
@@ -62,7 +61,6 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
         else
         {
             rightHandSlot.LoadWeaponModel(weaponItem);
-            Debug.Log(weaponItem);
             #region Handle Right Weapon Idle,Collider Animations
             if (weaponItem != null)
             {
@@ -77,7 +75,7 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
         }
     }
 
-    public void LoadToBack(Item weapon,bool upload)
+    public void LoadToBack(AttackingItem weapon,bool upload)
     {
         if (upload)
         {

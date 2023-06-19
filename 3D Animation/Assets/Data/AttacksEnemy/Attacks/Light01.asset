@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimationName: LightAttack01
   AttackScore: 3
-  RecoveryTime: 2
+  RecoveryTime: 6
+  isHeavy: 0
   MaximumAttackAngle: 35
   MinimumAttackAngle: -35
   MinimumAttackDistance: 0
-  MaximumAttackDistance: 1
+  MaximumAttackDistance: 1.5

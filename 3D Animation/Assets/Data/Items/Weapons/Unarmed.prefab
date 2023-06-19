@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7329506836915410310}
   m_Layer: 8
   m_Name: Unarmed
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5801427167450012081}
   m_Layer: 8
   m_Name: Hand
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07f429c48fb97146939087758d5c935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentWeaponDamage: 15
 --- !u!65 &5801427167450012081
 BoxCollider:
   m_ObjectHideFlags: 0

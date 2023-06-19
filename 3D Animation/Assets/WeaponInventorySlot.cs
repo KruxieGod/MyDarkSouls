@@ -39,6 +39,14 @@ public class WeaponInventorySlot : MonoBehaviour
     public void Upload()
     {
         var itemOfType = this.Item.GetType();
+        if (itemOfType == typeof(ArmorItem))
+        {
+            if (HandEquipmentSlotUI.Action(out var current, this.Item, this.Item.GetArmorItem(out var armorItem).PartOfTheArmor()))
+            {
+                playerInventory.GetComponent<CharacterEquipmentManager>().SetArmor(armorItem);
+            }
+            return;
+        }
         if (HandEquipmentSlotUI.Action != null && itemOfType.IsSubclassOf(typeof(Item)))
         {
             HandEquipmentSlotUI current;
@@ -57,7 +65,7 @@ public class WeaponInventorySlot : MonoBehaviour
                 {
                     Debug.Log("NoWeapon");
                     HandEquipmentSlotUI.Action(out current,Item);
-                    playerInventory.WeaponsInLeftHandSlots[current.Index % 2] = Item;
+                    playerInventory.WeaponsInLeftHandSlots[current.Index % 2] = (AttackingItem)Item;
                 }
             }
             else
@@ -65,7 +73,7 @@ public class WeaponInventorySlot : MonoBehaviour
                 if (current.Index < 2)
                 {
                     HandEquipmentSlotUI.Action(out current, Item);
-                    playerInventory.WeaponsInRightHandSlots[current.Index] = Item;
+                    playerInventory.WeaponsInRightHandSlots[current.Index] = (AttackingItem)Item;
                 }
             }
         }

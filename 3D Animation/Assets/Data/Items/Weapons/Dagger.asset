@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de7b6fb330f7c8438828029ea75fb1b, type: 3}
   m_Name: Dagger
   m_EditorClassIdentifier: 
-  PlayerId: 
+  CharacterStats: {fileID: 0}
   Id: 321234a4-5d30-442d-9046-39a6cb24843a
   modelPrefab: {fileID: 8408866666079524769, guid: 91258e4fdb5dcad4f8b549947765ec03, type: 3}
   ItemIcon: {fileID: 21300000, guid: c24422923743a2a4d889701208882405, type: 3}
   ItemName: Dagger
+  damageAnimation: Damage
   RightHandIdle: RightArmIdle001
   LeftHandIdle: LeftArmIdle001
   IsUnarmed: 0

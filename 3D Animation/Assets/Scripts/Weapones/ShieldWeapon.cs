@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Items/Shield")]
-public class ShieldWeapon : Item
+public class ShieldWeapon : AttackingItem
 {
     public bool isBlocking { get; private set; }
     [SerializeField] private string animationBlocking;

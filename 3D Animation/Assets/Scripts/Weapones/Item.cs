@@ -17,9 +17,11 @@ namespace SG
         [Header("Item Information")]
         public Sprite ItemIcon;
         public string ItemName;
-        [Header("Idle Animations")]
-        public string RightHandIdle;
-        public string LeftHandIdle;
+
+        public virtual bool IsSpell()
+        {
+            return false;
+        }
 
         public Item()
         {
@@ -55,7 +57,18 @@ namespace SG
 
         public virtual ShieldWeapon GetShield()
         {
-            return new ShieldWeapon();
+            return null;
+        }
+
+        public virtual bool IsAttackingWeapon()
+        {
+            return false;
+        }
+
+        public virtual ArmorItem GetArmorItem(out ArmorItem item)
+        {
+            item = null;
+            return null;
         }
     }
 }

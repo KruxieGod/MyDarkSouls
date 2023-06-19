@@ -7,7 +7,7 @@ public class AnimatorManager : CharacterAnimator
 {
     public override bool IsStabbing { get { return animator.GetBool("IsParrying"); }}
     public void SetStabbing() => animator.SetBool("IsParrying", true);
-    public void ResetStabbing() => animator.SetBool("IsParrying", false);
+    public void ResetStabbing() { animator.SetBool("IsParrying", false); animator.CrossFade("Left Arm Idle Shield",0.1f); }
     private PlayerStats playerStats;
     private InputManager inputManager;
     public Animator animator;

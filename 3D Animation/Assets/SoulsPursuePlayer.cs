@@ -20,12 +20,10 @@ public class SoulsPursuePlayer : MonoBehaviour
         vel.space = ParticleSystemSimulationSpace.Local;
         Player = FindAnyObjectByType<PlayerManager>().LockOnTransform;
         characterController = FindAnyObjectByType<CharacterController>();
-        Debug.Log(Player);
     }
 
     void Update()
     {
-        Debug.Log("UpdateParticle");
         Vector3 directionToPlayer = (Player.position - transform.position) + (characterController.velocity.magnitude > 1f ? characterController.velocity *offcetPlayerVelocity : Vector3.zero);
         vel.xMultiplier = directionToPlayer.x * multiplier;
         vel.yMultiplier = directionToPlayer.y * multiplierY;

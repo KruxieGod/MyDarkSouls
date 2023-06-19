@@ -33,7 +33,6 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // использование isinteracting для того , чтобы объект не мог двигаться
     {
-        Debug.Log(other.tag);
         if ((!other.CompareTag("Player") && !other.CompareTag("Enemy")))
             return;
         var characterStats = other.GetComponent<CharacterStats>();

@@ -35,15 +35,15 @@ public class UIManager : MonoBehaviour
                 return false;
             }
             return true;
-        }).ToDictionary(x => x.Item);
+        }).ToDictionary(x => (Item)x.Item);
         playerInventory = FindObjectOfType<PlayerInventory>();
     }
 
     public void UpdateUi()
     {
         #region Weapon Inventory Slots
-        Debug.Log(playerInventory.WeaponsInventory.Count);
-        foreach (var item in playerInventory.WeaponsInventory)
+        Debug.Log(playerInventory.Inventory.Count);
+        foreach (var item in playerInventory.Inventory)
         {
             if (!weaponInventorySlots.ContainsKey(item))
             {
@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        Debug.Log(playerInventory.WeaponsInventory.Count);
+        Debug.Log(playerInventory.Inventory.Count);
 
         #endregion
     }

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Analytics.Internal;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.TextCore.Text;
 
 public class EnemyAnimatorManager : CharacterAnimator
 {
@@ -15,8 +17,12 @@ public class EnemyAnimatorManager : CharacterAnimator
     public Animator Animator;
     private EnemyLocomotion enemyLocomotion;
     private EnemyStats enemyStats;
+    private NavMeshAgent agent;
+    private CharacterController character;
     void Start()
     {
+        character = GetComponent<CharacterController>();
+        agent = GetComponent<NavMeshAgent>();
         enemyStats = GetComponent<EnemyStats>();
         enemyLocomotion = GetComponent<EnemyLocomotion>();
         Animator = GetComponent<Animator>();
@@ -30,7 +36,7 @@ public class EnemyAnimatorManager : CharacterAnimator
 
     private void LateUpdate()
     {
-        Animator.SetFloat("MovementSpeed", enemyLocomotion.Agent.velocity.magnitude,0.2f,Time.deltaTime);
+        
     }
 
     public override void PlayTargetAnimation(string targetAnimation, bool useRootMotion = false, bool isInteracting = false, float time = 0)
@@ -40,16 +46,29 @@ public class EnemyAnimatorManager : CharacterAnimator
         Animator.CrossFade(targetAnimation, animationTransition);
     }
 
+    public void PlayerTargetAnimationWithRootRotation(string targetAnimation, bool useRootMotion = false, bool isInteracting = false, float time = 0)
+    {
+        PlayTargetAnimation(targetAnimation, useRootMotion, isInteracting, time);
+        Animator.SetBool("IsUsingRotationRootMotion", true);
+    }
+
+    public void ResetMovementValues()
+    {
+        Animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+        Animator.SetFloat("Horizontal", 0, 0.1f, Time.deltaTime);
+    }
+
     private void OnAnimatorMove()
     {
-        if (Animator.GetBool("IsUsingRootMotion") && Time.timeScale > 0.1f)
+        agent.isStopped = true;
+        agent.updateRotation = false;
+        Vector3 deltaPosition = Animator.deltaPosition;
+        deltaPosition.y = 0;
+        Vector3 velocity = Time.deltaTime > 0 ? deltaPosition / Time.deltaTime : Vector3.zero;
+        character.SimpleMove(velocity);
+        if (Animator.GetBool("IsUsingRotationRootMotion"))
         {
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
-            agent.isStopped = true;
-            Vector3 deltaPosition = Animator.deltaPosition;
-            deltaPosition.y = 0;
-            Vector3 velocity = Time.deltaTime > 0? deltaPosition / Time.deltaTime: Vector3.zero;
-            agent.velocity = velocity;
+            agent.transform.rotation *= Animator.deltaRotation;
         }
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - Hittable
   - Enemy
   - Interactable
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - ItemPickUp
   - Enemy
   - ItemDecoration
-  - 
+  - FireBall
   - 
   - 
   - 

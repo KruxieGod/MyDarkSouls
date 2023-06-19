@@ -19,8 +19,7 @@ public class IdleState : State
         }
         if (enemyStats.IsDeath)
             return deathState;
-        // Look for a target
-        // Switch to pursue target state
+        enemyAnimatorManager.ResetMovementValues();
         return this;
     }
 }

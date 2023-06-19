@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using Unity.Services.Analytics.Internal;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,11 +21,15 @@ public class EnemyLocomotion : MonoBehaviour
     private Coroutine coroutine;
     private bool waitForIdle;
     public float Angle = 60f;
+    public bool CanRotate = true;
+    [SerializeField] private float slerpRotation;
     void Awake()
     {
         enemyAnimator = GetComponent<EnemyAnimatorManager>();
         enemyManager = GetComponent<EnemyManager>();
         Agent = GetComponent<NavMeshAgent>();
+        //Agent.updatePosition = false;
+        Agent.updateRotation = false;
     }
 
     public void HandleAllMovement()
@@ -32,44 +37,52 @@ public class EnemyLocomotion : MonoBehaviour
 
     }
 
-    private void Seek(Vector3 targetPosition)
+    public bool IsClosedWithTarget()
     {
-        //if (Vector3.Angle(targetPosition, transform.forward) >= 90 &&
-        //    !enemyAnimator.Animator.GetCurrentAnimatorStateInfo(0).IsName("RunToStop") &&
-        //    Agent.speed > 2f)
-        //    enemyAnimator.PlayTargetAnimation("RunToStop"); // Нужно сделать , чтобы объект при повороте тормозил , но адекватно
+        return Vector3.Distance(CharacterManager.transform.position, transform.position) <= Agent.stoppingDistance;
+    }
+
+    public void CombatStanceUpdateRotation()
+    {
+        Vector3 targetDirection = CharacterManager.transform.position - transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,slerpRotation*Time.deltaTime);
+    }
+
+    public void Seek(Vector3 targetPosition)
+    {
         Agent.SetDestination(targetPosition);
+    }
+
+    private void PursueUpdateRotation()
+    {
+        Agent.SetDestination(this.CharacterManager.transform.position);
+        var v = Agent.path.corners[Mathf.Clamp(1, 0, Agent.path.corners.Length-1)] - transform.position;
+        v.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(v);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, slerpRotation * Time.deltaTime);
     }
 
     public void PursuitPlayer()
     {
         if (enemyAnimator.Animator.GetBool("IsUsingRootMotion"))
             return;
+        PursueUpdateRotation();
         Agent.speed = 3.5f;
         Vector3 targetPosition = this.CharacterManager.transform.position;
         Vector3 direction = targetPosition - Agent.transform.position;
+        direction.y = 0;
         float distance = direction.magnitude;
-        
-        if (distance < 1.5 || coroutine != null)
+        if (distance <=Agent.stoppingDistance)
         {
-            Debug.Log("A");
-            Agent.updateRotation = false;
-            Agent.speed = 2f;
-            transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0,direction.z));
-            Seek(transform.position - direction.normalized*Mathf.Clamp(direction.magnitude,2f, direction.magnitude));
-            if (coroutine != null && distance < 1)
-            {
-                StopCoroutine(coroutine);
-                coroutine = StartCoroutine(TimeToBack());
-            }
-            else if (coroutine == null)
-                coroutine = StartCoroutine(TimeToBack());
+            enemyAnimator.Animator.SetFloat("Vertical", 0f);
+            enemyAnimator.Animator.SetFloat("Horizontal", 0f);
+            return;
         }
-        else if(distance < DistanceDetection)
+        if (distance < DistanceDetection)
         {
             float angle = Vector3.Angle(direction, transform.forward);
             float angleBetweenForwards = Vector3.Angle(transform.forward, this.CharacterManager.transform.forward);
-            Agent.updateRotation = true;
             if (angle <= Angle)
                 isPursuit = true;
             if (isPursuit)
@@ -78,18 +91,19 @@ public class EnemyLocomotion : MonoBehaviour
                 if ((angleBetweenForwards < 30 && angle > 90) || characterControllerPlayer.velocity.magnitude < 0.01f)
                 {
                     Seek(targetPosition);
-                    Debug.Log("2");
                 }
                 else
                 {
                     float offset = direction.magnitude / (Agent.speed + characterControllerPlayer.velocity.magnitude); // Sum of speeds = time to target
                     Seek(targetPosition + CharacterManager.transform.forward * offset * 1.5f);
-                    Debug.Log("1");
                 }
+                enemyAnimator.Animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);
+                enemyAnimator.Animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
             }
         }
         else
         {
+            enemyAnimator.ResetMovementValues();
             isPursuit = false;
             CharacterManager = null;
         }

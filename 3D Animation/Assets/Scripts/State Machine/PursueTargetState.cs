@@ -11,7 +11,6 @@ public class PursueTargetState : State
     [SerializeField]private DeathState deathState;
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager,EnemyLocomotion enemyLocomotion)
     {
-        enemyLocomotion.Agent.isStopped = false;
         enemyLocomotion.PursuitPlayer();
         if (enemyLocomotion.CharacterManager == null)
             return IdleState;
@@ -19,8 +18,8 @@ public class PursueTargetState : State
             return combatStanceState;
         if (enemyStats.IsDeath)
             return deathState;
-        // Chase the target
-        // If necessary switch to Combat Stance 
+        //// Chase the target
+        //// If necessary switch to Combat Stance 
         return this;
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7621878156333248163}
   m_Layer: 8
   m_Name: Sword 1
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -79,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 1927247168838044, guid: c50c05b371e039141afd3b8e98252ef5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1927247168838044, guid: c50c05b371e039141afd3b8e98252ef5, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
       objectReference: {fileID: 0}
     - target: {fileID: 4631913152936944, guid: c50c05b371e039141afd3b8e98252ef5, type: 3}
       propertyPath: m_RootOrder
@@ -173,7 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07f429c48fb97146939087758d5c935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentWeaponDamage: 25
 --- !u!4 &8391618957986908349 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4631913152936944, guid: c50c05b371e039141afd3b8e98252ef5, type: 3}

@@ -52,14 +52,12 @@ public class PlayerLocomotion : MonoBehaviour
     {
 
     }
-
+    
     public void HandleRotationUpdate()
     {
-
         HandleFallingAndLanding();
         if (updateRotation != null)
             updateRotation();
-        Debug.Log(playerManager.isInteracting);
         if (playerManager.isInteracting)
         {
             if (jumpCoroutine == null)
@@ -138,7 +136,6 @@ public class PlayerLocomotion : MonoBehaviour
             targetDir = diretionRotation;
         else
             diretionRotation = targetDir;
-        Debug.Log("updating");
     }
 
     private void HandleFallingAndLanding()
@@ -152,7 +149,6 @@ public class PlayerLocomotion : MonoBehaviour
             {
                 animatorManager.PlayTargetAnimation("Falling", false,true);
             }
-            Debug.Log("Falling");
             moveDirection /= 2f;
             animatorManager.animator.SetBool("IsUsingRootMotion", false);
             inAirTimer += Time.deltaTime;

@@ -4,22 +4,33 @@ using UnityEngine;
 using UnityEngine.UI;
 using SG;
 
-public class HealthBar : MonoBehaviour
+public class HealthBar : MonoBehaviour,IHealthBar
 {
-    private Slider slider;
-
+    protected Slider slider;
     private void Awake()
     {
         slider = GetComponent<Slider>();
     }
 
-    public void SetMaxHealth(int maxHealth)
+    void IHealthBar.SetMaxHealth(int maxHealth)
     {
+        this.SetMaxHealth(maxHealth);
+    }
+
+    void IHealthBar.SetCurrentHealth(int currentHealth)
+    {
+        this.SetCurrentHealth(currentHealth);
+    }
+
+    internal virtual void SetMaxHealth(int maxHealth)
+    {
+        if (slider == null)
+            slider = GetComponentInChildren<Slider>();
         slider.maxValue = maxHealth;
         slider.value = maxHealth;
     }
 
-    public void SetCurrentHealth(int currentHealth)
+    internal virtual void SetCurrentHealth(int currentHealth)
     {
         slider.value = currentHealth;
     }

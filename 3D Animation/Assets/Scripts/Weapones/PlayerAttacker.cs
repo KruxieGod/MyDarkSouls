@@ -141,6 +141,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (!animatorManager.IsStabbing && playerInventory.LeftWeapon.IsShield() && !playerManager.isInteracting && playerStats.CurrentStamina > 0)
         {
+            animatorManager.animator.Play("Left Arm Empty", animatorManager.animator.GetLayerIndex("Left Arm"));
             animatorManager.PlayTargetAnimation("Parry", true,true);
             animatorManager.SetStabbing();
         }

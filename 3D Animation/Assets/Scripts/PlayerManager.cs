@@ -54,7 +54,6 @@ public class PlayerManager : CharacterManager
     private void TriggerIsHere()
     {
         Collider[] colliders = Physics.OverlapBox(transform.position + new Vector3(0, sizeSearchingItems.y / 2f, 0), sizeSearchingItems, transform.rotation, itemsMask);
-        Debug.Log(colliders.Length);
         if (colliders.Length > 0)
         {
             for (int i = 0; i < colliders.Length; i++)

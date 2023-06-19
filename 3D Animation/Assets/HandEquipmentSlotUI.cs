@@ -11,11 +11,11 @@ public class HandEquipmentSlotUI : MonoBehaviour
 {
     public Image Icon;
     public Item Item;
-    public delegate void WeaponAction(out HandEquipmentSlotUI gameObj, Item newWeapon = null);
+    public delegate bool WeaponAction(out HandEquipmentSlotUI gameObj, Item newWeapon = null, PartOfTheArmor partOfTheArmor = PartOfTheArmor.Weapon);
     public static WeaponAction Action { get; private set; }
     public int Index = 0;
     public static GridLayoutGroup Group;
-
+    [SerializeField]private PartOfTheArmor partOfTheArmor;
     public static void ResetAction()
     {
         Action = null;
@@ -35,17 +35,30 @@ public class HandEquipmentSlotUI : MonoBehaviour
         Debug.Log("Bye");
     }
 
-    public void AddItem(out HandEquipmentSlotUI gameObj, Item newWeapon = null)
+    public bool AddItem(out HandEquipmentSlotUI gameObj, Item newWeapon = null, PartOfTheArmor partOfTheArmor = PartOfTheArmor.Weapon)
     {
-        if (newWeapon == null)
-        {
-            gameObj = this;
-            return;
-        }
         gameObj = this;
+        if (partOfTheArmor != PartOfTheArmor.Weapon)
+        {
+            if (partOfTheArmor == this.partOfTheArmor)
+            {
+                SetIcon(newWeapon);
+                return true;
+            }
+            else
+                return false;
+        }
+        if (newWeapon == null)
+            return false;
+        SetIcon(newWeapon);
+        return true;
+    }
+
+    private void SetIcon(Item newWeapon)
+    {
         Item = newWeapon;
         Icon.sprite = Item.ItemIcon;
-        Icon.enabled= true;
+        Icon.enabled = true;
         gameObject.SetActive(true);
     }
 
@@ -60,4 +73,16 @@ public class HandEquipmentSlotUI : MonoBehaviour
     {
         Action = AddItem;
     }
+}
+
+public enum PartOfTheArmor
+{
+    Weapon,
+    Head,
+    Torso,
+    UpperArms,
+    LowerArms,
+    Hands,
+    Legs,
+    Hips
 }

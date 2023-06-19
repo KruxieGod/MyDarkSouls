@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a397aa46cb364fa4ea7a0649f84bb076, type: 3}
+  m_Name: FireBall
+  m_EditorClassIdentifier: 
+  CharacterStats: {fileID: 0}
+  Id: 03c59299-9b9e-4168-90e4-d1d8164deb34
+  modelPrefab: {fileID: 2438252711033468093, guid: 0593d4dde867d024f8eb08ccc11fe71c, type: 3}
+  ItemIcon: {fileID: 21300000, guid: c8e95cb6272c7254ba68052f548350ba, type: 3}
+  ItemName: FireBall
+  damageAnimation: Damage
+  RightHandIdle: 
+  LeftHandIdle: LeftArmIdle001
+  spellWarmUpFX: {fileID: 614408683144216720, guid: 04b11a62fa0825c4a8072d74f8a749eb, type: 3}
+  spellCastFX: {fileID: 8196048726478855351, guid: a5168319509764f4c98126c028000386, type: 3}
+  SpellAnimation: CastingMagic
+  CostSpell: 0
+  Spell: 0
+  SpellDescription: 
+  mass: 0.02
+  gravityUp: 3
+  gravityForward: 15
+  amountDamage: 50

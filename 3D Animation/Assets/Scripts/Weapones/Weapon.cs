@@ -18,7 +18,7 @@ public enum Casters
 namespace SG
 {
     [CreateAssetMenu(menuName = "Items/Weapon Item")]
-    public class Weapon : Item
+    public class Weapon : AttackingItem
     {
         public bool IsUnarmed;
         [Header("Damage Weapon")]

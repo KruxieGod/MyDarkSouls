@@ -11,10 +11,12 @@ public enum Spells
     MagicSpell
 }
 
-public class SpellItem : Item
+public class SpellItem : AttackingItem
 {
-    public GameObject SpellWarmUpFX;
-    public GameObject SpellCastFX;
+    [SerializeField]protected GameObject spellWarmUpFX;
+    public GameObject SpellWarmUpFX => spellWarmUpFX;
+    [SerializeField]protected GameObject spellCastFX;
+    public GameObject SpellCastFX => spellCastFX;
     public string SpellAnimation;
     public int CostSpell;
 
@@ -24,4 +26,9 @@ public class SpellItem : Item
     [Header("Spell Description")]
     [TextArea]
     public string SpellDescription;
+
+    public override bool IsSpell()
+    {
+        return true;
+    }
 }

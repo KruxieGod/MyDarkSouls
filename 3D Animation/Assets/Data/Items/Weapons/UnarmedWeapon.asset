@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de7b6fb330f7c8438828029ea75fb1b, type: 3}
   m_Name: UnarmedWeapon
   m_EditorClassIdentifier: 
-  PlayerId: 95c9068a-25ea-4f09-a858-7bb57ca690bf
+  CharacterStats: {fileID: 0}
   Id: c6008d09-64e0-4283-983f-e9991ac94718
   modelPrefab: {fileID: 3285702298157498506, guid: c5d43f4ad9d077b45949c1317cfb41e1, type: 3}
   ItemIcon: {fileID: 21300000, guid: 010fb5e1b9206b5418e227721c357128, type: 3}
   ItemName: Unarmed
+  damageAnimation: Damage
   RightHandIdle: Right Arm Empty
   LeftHandIdle: Left Arm Empty
   IsUnarmed: 1
