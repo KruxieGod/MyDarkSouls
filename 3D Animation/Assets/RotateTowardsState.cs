@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class RotateTowardsState : State
 {
-    [SerializeField] private CombatStanceState combatStanceState;
-    public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager, EnemyLocomotion enemyLocomotion)
+    internal override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager, EnemyLocomotion enemyLocomotion)
     {
-        if (enemyAnimatorManager.IsUsingRootMotion)
-            return combatStanceState;
+        if (enemyAnimatorManager.Animator.GetBool(enemyManager.IsAttacking) || enemyManager.IsInteracting)
+            return new CombatStanceState();
         enemyAnimatorManager.Animator.SetFloat("Horizontal", 0,0.1f,Time.deltaTime);
         enemyAnimatorManager.Animator.SetFloat("Vertical", 0,0.1f, Time.deltaTime);
         float angleToTarget = Vector3.SignedAngle(enemyManager.transform.forward, enemyLocomotion.CharacterManager.transform.position - enemyManager.transform.position, Vector3.up);
@@ -20,6 +19,6 @@ public class RotateTowardsState : State
         else if ((angleToTarget <= -100 && angleToTarget >= -181) || (angleToTarget >= 100 && angleToTarget <= 181))
             enemyAnimatorManager.PlayerTargetAnimationWithRootRotation("TurnBack", true);
 
-        return combatStanceState;
+        return new CombatStanceState();
     }
 }

@@ -178,13 +178,13 @@ internal sealed class EqupmentInventory
     #endregion
 }
 
-internal interface IArmorsEquipmentSlot
+interface IArmorsEquipmentSlot
 {
-    internal protected void Initialize();
-    internal protected bool SetActive(string name,bool isActive);
+    void Initialize();
+    bool SetActive(string name,bool isActive);
 }
 
-internal interface IArmorSettings
+interface IArmorSettings
 {
     float damageAbsorptionHelmet { get; internal set; }
     float damageAbsorptionTorso { get; internal set; }

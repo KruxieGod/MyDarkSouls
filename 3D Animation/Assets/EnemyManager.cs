@@ -1,41 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SG;
-using UnityEngine.AI;
 using System.Linq;
 using System;
 
 public class EnemyManager : CharacterManager
 {
+    public string IsAttacking => "IsAttacking";
+    public string IsInteractingAnimation => "IsInteracting";
     public override bool IsParried { get { return enemyAnimatorManager.Animator.GetBool("IsParried"); } }
     private EnemyStats enemyStats;
-    public State CurrentState;
+    public State CurrentState { get; private set; }
     private EnemyLocomotion enemyLocomotion;
     private EnemyAnimatorManager enemyAnimatorManager;
     [SerializeField]private EnemyAttackAction[] enemyAttackActions;
-    private List<(int, EnemyAttackAction)> enemyActions;
+    private List<(int, EnemyAttackAction)> enemyActions = new List<(int, EnemyAttackAction)>();
     private List<Coroutine> recoveryAttacks= new List<Coroutine>();
     public Tuple<EnemyAttackAction,int> CurrentAttackAction { get; private set; }
-    public bool IsUsingRootMotion { get { return enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion"); } }
+    public bool IsInteracting { get { return enemyAnimatorManager.Animator.GetBool(IsInteractingAnimation); } }
+
     private void Start()
     {
+        State.GameObject = this;
+        CurrentState = new IdleState();
         enemyStats = GetComponent<EnemyStats>();
         enemyLocomotion = GetComponent<EnemyLocomotion>();
         enemyAnimatorManager= GetComponent<EnemyAnimatorManager>();
-        enemyActions = enemyAttackActions.Select((item,index) => (index, item)).ToList();
+        AddNewAttacks(enemyAttackActions);
+    }
+
+    internal void AddNewAttacks(EnemyAttackAction[] enemyAttacks)
+    {
+        enemyActions = enemyAttacks.Select((item, index) => (enemyActions.Count + index, item)).ToList();
+        for (int i = 0; i < enemyAttacks.Length; i++)
+            recoveryAttacks.Add(null);
+    }
+
+    internal void ResetAttacks()
+    {
+        recoveryAttacks.Clear();
+        enemyActions = enemyAttackActions.Select((item, index) => (index, item)).ToList();
         for (int i = 0; i < enemyActions.Count; i++)
             recoveryAttacks.Add(null);
     }
 
-    public bool IsClosedWithTarget()
+    internal bool IsClosedWithTarget()
     {
         if (enemyLocomotion.Agent.remainingDistance < 0.01f)
             return false;
         return enemyLocomotion.Agent.remainingDistance < enemyLocomotion.Agent.stoppingDistance+0.1f;
     }
 
-    public bool AnyAttackIsRecovered()
+    internal bool AnyAttackIsRecovered()
     {
         return recoveryAttacks.Any(x => x == null);
     }
@@ -47,10 +63,6 @@ public class EnemyManager : CharacterManager
 
     private void Update()
     {
-        foreach (var item in recoveryAttacks)
-        {
-            Debug.Log(item);
-        }
         HandleStateMachine();
     }
 
@@ -71,9 +83,11 @@ public class EnemyManager : CharacterManager
         CurrentState = state; 
     }
 
-    public bool GetAttack()
+    internal bool GetAttack()
     {
-        if ((enemyAnimatorManager.Animator.GetBool("IsUsingRootMotion")&&!enemyAnimatorManager.CanDoCombo) || enemyAnimatorManager.IsComboing)
+        if (enemyAnimatorManager.Animator.GetBool(IsInteractingAnimation))
+            return false;
+        if ((enemyAnimatorManager.Animator.GetBool(IsAttacking)&&!enemyAnimatorManager.CanDoCombo) || enemyAnimatorManager.IsComboing)
             return false;
         if (enemyAnimatorManager.CanDoCombo)
         {
@@ -102,10 +116,11 @@ public class EnemyManager : CharacterManager
         return false;
     }
 
-    public void PlayAttack()
+    internal void PlayAttack()
     {
         enemyLocomotion.Agent.isStopped = true;
-        enemyAnimatorManager.PlayTargetAnimation(CurrentAttackAction.Item1.AnimationName,true);
+        enemyAnimatorManager.Animator.SetBool(IsAttacking,true);
+        enemyAnimatorManager.PlayTargetAnimation(CurrentAttackAction.Item1.AnimationName);
         recoveryAttacks[CurrentAttackAction.Item2] = StartCoroutine(
             RecoveryTimer(CurrentAttackAction.Item2, CurrentAttackAction.Item1.RecoveryTime));
     }
@@ -116,7 +131,7 @@ public class EnemyManager : CharacterManager
         recoveryAttacks[index] = null;
     }
 
-    public bool SearchTarget()
+    internal bool SearchTarget()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, enemyLocomotion.DistanceDetection, enemyLocomotion.LayerDetections);
         if (colliders.Length > 0)

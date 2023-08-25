@@ -65,7 +65,7 @@ public class EnemyLocomotion : MonoBehaviour
 
     public void PursuitPlayer()
     {
-        if (enemyAnimator.Animator.GetBool("IsUsingRootMotion"))
+        if (enemyAnimator.Animator.GetBool("IsInteracting"))
             return;
         PursueUpdateRotation();
         Agent.speed = 3.5f;

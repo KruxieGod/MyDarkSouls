@@ -9,7 +9,7 @@ public class PlayerStats : CharacterStats
     private PlayerAttacker playerAttacker;
     public override bool IsHeavyAttack => playerAttacker.IsHeavy;
     public int SoulsAmount { get; private set; }
-    public override bool IsInvulnerability { get; protected set; }
+    public override bool IsInvulnerability { get; set; }
     public PlayerStatistics playerStatistics;
 
     public int MaxHealth;
@@ -38,6 +38,7 @@ public class PlayerStats : CharacterStats
 
     void Start()
     {
+        base.Start();
         healthBar = FindObjectOfType<UIManager>().GetComponentInChildren<HealthBar>();
         healthBar.Initialize();
         MaxStamina = SetMaxStaminaFromStaminaLevel();
@@ -83,9 +84,12 @@ public class PlayerStats : CharacterStats
         {
             CurrentHealth = 0;
             animator.PlayTargetAnimation("Death", true,true);
+            animator.animator.SetBool("IsDeath",true);
             return;
         }
-        animator.PlayTargetAnimation(playerInventory.LeftWeapon.DamageAnimation, false,withInteracting? true: playerManager.isInteracting);
+        Debug.Log("<color=yellow>" + damageIsAnimated + "</color>");
+        if (!damageIsAnimated) return;
+        animator.PlayTargetAnimation(playerInventory.LeftWeapon.DamageAnimation, true,true);
     }
 
     public override void TakeStaminaDamage(int damage)
@@ -100,6 +104,7 @@ public class PlayerStats : CharacterStats
 
     private void Update()
     {
+        base.Update();
         if (energyRechargeCorountine == null && CurrentStamina != MaxStamina)
             StaminaRest();
     }

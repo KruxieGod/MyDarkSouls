@@ -1,36 +1,53 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class EnemyStats : CharacterStats
+public class EnemyStats 
+    : CharacterStats
 {
+    private EnemyAnimatorManager enemyAnimatorManager;
     [SerializeField] private float speedCollision;
     private IHealthBar healthBar;
-    public Func<IHealthBar> UpdateHealthBar;
-    public override bool IsInvulnerability { get => animator.GetBool("IsInvulnerability"); protected set => IsInvulnerability = value; }
+    internal Func<IHealthBar> UpdateHealthBar;
+    public override bool IsInvulnerability { get => animator.GetBool("IsInvulnerability"); 
+        set { 
+            animator.SetBool("IsInvulnerability", value); 
+            animator.Play("Empty", animator.GetLayerIndex("Damage")); 
+        } 
+    }
     private EnemyManager enemyManager;
-    public override bool IsHeavyAttack { get { if (enemyManager.CurrentAttackAction.Item1 != null) return enemyManager.CurrentAttackAction.Item1.IsHeavy;
-                    return false; } }
+    public override bool IsHeavyAttack => enemyManager.CurrentAttackAction.Item1 != null && enemyManager.CurrentAttackAction.Item1.IsHeavy;
     [SerializeField]private int soulsCount;
     public int SoulsCount => soulsCount;
-    public int HealthLevel = 10;
-    public int MaxHealth; 
+    [SerializeField]private int healthLevel = 10;
+    [SerializeField]private int maxHealth; 
 
     public bool IsDeath { get; private set; }
     private Animator animator;
 
     private void Awake()
     {
+        enemyAnimatorManager = GetComponent<EnemyAnimatorManager>();
         enemyManager = GetComponent<EnemyManager>();
         animator = GetComponent<Animator>();
     }
 
+    internal override void Update()
+    {
+        base.Update();
+    }
+
+    public void SetOffHealthBar()
+    {
+        Debug.Log("OFF ENEMYSTATS");
+        healthBar.SetOff();
+    }
+
     public void InitializeEvents()
     {
-        MaxHealth = SetMaxHealthFromHealthLevel();
-        CurrentHealth = MaxHealth;
+        maxHealth = SetMaxHealthFromHealthLevel();
+        CurrentHealth = maxHealth;
         healthBar = UpdateHealthBar();
         healthBar.Initialize();
         healthBar.SetMaxHealth(CurrentHealth);
@@ -43,8 +60,8 @@ public class EnemyStats : CharacterStats
 
     private int SetMaxHealthFromHealthLevel()
     {
-        MaxHealth = HealthLevel * 10;
-        return MaxHealth;
+        maxHealth = healthLevel * 10;
+        return maxHealth;
     }
 
     public void TakeCriticalDamage()
@@ -54,7 +71,8 @@ public class EnemyStats : CharacterStats
 
     public override void TakeDamage(int damage,bool withoutAnimation = false)
     {
-        CurrentHealth -= damage;
+        base.TakeDamage(damage);
+        GlobalEventManager.OnBossPhases.Invoke();
         healthBar.SetCurrentHealth(CurrentHealth);
         if (CurrentHealth <= 0)
         {
@@ -64,7 +82,8 @@ public class EnemyStats : CharacterStats
             if (!withoutAnimation)
                 animator.CrossFade("Death", 0.2f);
         }
-        animator.CrossFade("Damage",0.2f);
+        if (!damageIsAnimated || enemyAnimatorManager.IsInteracting) return;
+        enemyAnimatorManager.PlayTargetAnimation("Damage",true);
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -4,7 +4,7 @@ using UnityEngine;
 using SG;
 public class DamageCollider : MonoBehaviour
 {
-    private Weapon weapon;
+    [SerializeField]private Weapon weapon;
     Collider damageCollider;
 
     private void Awake()
@@ -31,8 +31,9 @@ public class DamageCollider : MonoBehaviour
         damageCollider.enabled = false;
     }
 
-    private void OnTriggerEnter(Collider other) // использование isinteracting для того , чтобы объект не мог двигаться
+    private void OnTriggerEnter(Collider other) // РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ isinteracting РґР»СЏ С‚РѕРіРѕ , С‡С‚РѕР±С‹ РѕР±СЉРµРєС‚ РЅРµ РјРѕРі РґРІРёРіР°С‚СЊСЃСЏ
     {
+        Debug.Log("DAMAGECOLLIDER: "+ other.tag);
         if ((!other.CompareTag("Player") && !other.CompareTag("Enemy")))
             return;
         var characterStats = other.GetComponent<CharacterStats>();
@@ -45,8 +46,10 @@ public class DamageCollider : MonoBehaviour
             characterStats.TakeStaminaDamage(weapon.Damage);
             return;
         }
+        Debug.Log("DAMAGE COLLIDER: " + other.tag + " " + characterStats.IsInvulnerability);
         if (!characterStats.IsInvulnerability)
         {
+            Debug.Log("<color=black>"+weapon.CharacterStats.IsHeavyAttack+ " "+ weapon.Damage +"</color>");
             characterStats.TakeDamage( (int)((weapon.CharacterStats.IsHeavyAttack ? (int)(weapon.HeavyAttackMultiplier * weapon.Damage) : weapon.Damage)*characterStats.GetSofteningBlowInPercent()), false);
         }
     }

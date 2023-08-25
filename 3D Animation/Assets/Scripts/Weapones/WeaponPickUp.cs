@@ -22,6 +22,9 @@ public class WeaponPickUp : Interactable
     private void Awake()
     {
         ItemObject = Instantiate(ItemObject);
+        Debug.Log(this);
+        var model = ItemObject.modelPrefab.GetComponentInChildren<BoxCollider>().gameObject;
+        if (model == null) return;
         weaponModel = Instantiate(ItemObject.modelPrefab.GetComponentInChildren<BoxCollider>().gameObject, transform.position, Quaternion.identity);
         transform.rotation = UnityEngine.Random.rotation;
         UploadModelInScene();

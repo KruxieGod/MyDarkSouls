@@ -20,5 +20,6 @@ MonoBehaviour:
   damageAnimation: Guard Shield
   RightHandIdle: 
   LeftHandIdle: Left Arm Idle Shield
+  poiseBreak: 30
   animationBlocking: ShieldBlock
-  softeningBlowInPercent: 90
+  softeningBlowInPercent: 50

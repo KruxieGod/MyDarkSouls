@@ -30,7 +30,7 @@ namespace SG
         public string[] HeavyAttacks;
         public string[] TwoHandedAttacks;
 
-        [Header("Stamina Costs")]
+        [Header("Stamina Costs")] 
         public int BaseStamina;
         public float LightAttackMultiplier;
         public float HeavyAttackMultiplier;

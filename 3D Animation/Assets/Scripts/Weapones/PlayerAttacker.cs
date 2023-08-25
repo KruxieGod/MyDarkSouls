@@ -40,6 +40,7 @@ public class PlayerAttacker : MonoBehaviour
         if (!inputManager.ComboFlag || playerStats.CurrentStamina <=0)
             return;
         animatorManager.animator.SetBool("CanDoCombo", false);
+        weaponSlotManager.PlayParticlesWeapon();
         animatorManager.PlayTargetAnimation(attacks[(++LastAttack)% attacks.Length], true, true);
         RotateToNerbyEnemy();
     }
@@ -48,6 +49,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (playerStats.CurrentStamina <= 0)
             return;
+        weaponSlotManager.PlayParticlesWeapon();
         weaponSlotManager.AttackingWeapon= weapon;
         IsHeavy = false;
         attacks = !inputManager.G || weapon.IsUnarmed ? weapon.LightsAttacks : weapon.TwoHandedAttacks;
@@ -62,6 +64,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         if (playerStats.CurrentStamina <= 0)
             return;
+        weaponSlotManager.PlayParticlesWeapon();
         weaponSlotManager.AttackingWeapon = weapon;
         IsHeavy = true;
         attacks = !inputManager.G || weapon.IsUnarmed ? weapon.HeavyAttacks: weapon.TwoHandedAttacks;

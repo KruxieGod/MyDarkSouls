@@ -18,8 +18,9 @@ public class SoulsPursuePlayer : MonoBehaviour
         vel = _particleSystem.velocityOverLifetime;
         vel.enabled = true;
         vel.space = ParticleSystemSimulationSpace.Local;
-        Player = FindAnyObjectByType<PlayerManager>().LockOnTransform;
-        characterController = FindAnyObjectByType<CharacterController>();
+        Player = FindAnyObjectByType<PlayerManager>().transform;
+        characterController = Player.GetComponent<CharacterController>();
+        Player = Player.GetComponent<PlayerManager>().LockOnTransform;
     }
 
     void Update()

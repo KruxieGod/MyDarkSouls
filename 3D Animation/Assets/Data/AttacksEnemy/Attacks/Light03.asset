@@ -15,7 +15,7 @@ MonoBehaviour:
   AnimationName: OH_Sword_Attack2
   AttackScore: 3
   RecoveryTime: 5
-  isHeavy: 1
+  isHeavy: 0
   MaximumAttackAngle: 35
   MinimumAttackAngle: -35
   MinimumAttackDistance: 0

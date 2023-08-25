@@ -5,19 +5,17 @@ using UnityEngine;
 
 public class PursueTargetState : State
 {
-    [SerializeField] private CombatStanceState combatStanceState;
-    public AttackState AttackStanceState;
-    public IdleState IdleState;
-    [SerializeField]private DeathState deathState;
-    public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager,EnemyLocomotion enemyLocomotion)
+    internal override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager,EnemyLocomotion enemyLocomotion)
     {
+        if (enemyManager.IsInteracting)
+            return this;
         enemyLocomotion.PursuitPlayer();
         if (enemyLocomotion.CharacterManager == null)
-            return IdleState;
+            return new IdleState();
         if (enemyManager.GetAttack())
-            return combatStanceState;
+            return new CombatStanceState();
         if (enemyStats.IsDeath)
-            return deathState;
+            return new DeathState();
         //// Chase the target
         //// If necessary switch to Combat Stance 
         return this;

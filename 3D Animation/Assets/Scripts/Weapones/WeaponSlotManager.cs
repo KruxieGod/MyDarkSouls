@@ -12,6 +12,7 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
     private Animator animator;
     private PlayerStats playerStats;
     private InputManager inputManager;
+    private CharacterStats characterStats;
 
     public Weapon AttackingWeapon;
 
@@ -21,6 +22,7 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
     {
         inputManager = GetComponent<InputManager>();    
         playerStats = GetComponent<PlayerStats>();
+        characterStats = playerStats;
         QuickSlots = FindObjectOfType<QuickSlotsUI>();
         animator = GetComponent<Animator>();
         WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
@@ -64,6 +66,7 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
             #region Handle Right Weapon Idle,Collider Animations
             if (weaponItem != null)
             {
+                characterStats.AttackingItem = weaponItem;
                 animator.CrossFade(weaponItem.RightHandIdle, 0.2f);
                 LoadRightWeaponDamageCollider();
             }
@@ -110,7 +113,9 @@ public class WeaponSlotManager : CharacterWeaponHolderSlotManager
 
     private void LoadRightWeaponDamageCollider()
     {
-        rightHandDamageCollider = rightHandSlot.CurrentWeaponModel.GetComponentInChildren<DamageCollider>();
+        var damageCollider = rightHandSlot.CurrentWeaponModel.GetComponentInChildren<DamageCollider>();
+        rightHandDamageCollider = damageCollider;
+        rightAttackingWeaponFX = damageCollider.GetComponent<WeaponFX>();
     }
 
     public void OpenRightDamageCollider()

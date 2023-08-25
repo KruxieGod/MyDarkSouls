@@ -45,8 +45,18 @@ public class HealthBar : MonoBehaviour,IHealthBar
         slider = GetComponent<Slider>();
     }
 
+    internal virtual void SetOff()
+    {
+
+    }
+
     void IHealthBar.Initialize()
     {
         this.Initialize();
+    }
+
+    void IHealthBar.SetOff()
+    {
+        SetOff();
     }
 }

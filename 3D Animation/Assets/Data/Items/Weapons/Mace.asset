@@ -20,6 +20,7 @@ MonoBehaviour:
   damageAnimation: Damage
   RightHandIdle: RightArmIdle001
   LeftHandIdle: LeftArmIdle001
+  poiseBreak: 15
   IsUnarmed: 0
   damage: 25
   LightsAttacks:

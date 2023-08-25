@@ -17,5 +17,5 @@ MonoBehaviour:
   modelPrefab: {fileID: 0}
   ItemIcon: {fileID: 0}
   ItemName: NakedUnarmed
-  damageAbsorption: 0
+  damageAbsorption: 10
   nameOfGameObject: Chr_Head_No_Elements_Male_12

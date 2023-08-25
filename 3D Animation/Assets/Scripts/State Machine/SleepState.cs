@@ -5,21 +5,18 @@ using UnityEngine;
 
 public class SleepState : State
 {
-    public PursueTargetState TargetState;
     private bool isSleeping;
-    public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager, EnemyLocomotion enemyLocomotion)
+    internal override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager, EnemyLocomotion enemyLocomotion)
     {
         if (!isSleeping)
         {
             isSleeping = true;
-            Debug.Log("Sleep");
             enemyAnimatorManager.PlayTargetAnimation("LayingIdle");
         }
         if (enemyManager.SearchTarget())
         {
-            Debug.Log("Зашел");
             enemyAnimatorManager.PlayTargetAnimation("GettingUp",true,false,0.03f);
-            return TargetState;
+            return new PursueTargetState();
         }
         return this;
     }

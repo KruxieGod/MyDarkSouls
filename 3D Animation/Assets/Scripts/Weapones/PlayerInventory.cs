@@ -65,7 +65,7 @@ public class PlayerInventory : MonoBehaviour
         ChangeWeapon(ref currentLeftWeaponIndex,WeaponsInLeftHandSlots, action);
     }
 
-    private void ChangeWeapon(ref int index, AttackingItem[] inventory,Action<AttackingItem> action) // передаем делегат действия , чтобы присвоить оружию нужную сторону.
+    private void ChangeWeapon(ref int index, AttackingItem[] inventory,Action<AttackingItem> action) // РїРµСЂРµРґР°РµРј РґРµР»РµРіР°С‚ РґРµР№СЃС‚РІРёСЏ , С‡С‚РѕР±С‹ РїСЂРёСЃРІРѕРёС‚СЊ РѕСЂСѓР¶РёСЋ РЅСѓР¶РЅСѓСЋ СЃС‚РѕСЂРѕРЅСѓ.
     {
         index++;
         for (; index < inventory.Length; index++)

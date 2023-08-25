@@ -7,18 +7,15 @@ using UnityEngine.AI;
 
 public class IdleState : State
 {
-    public PursueTargetState PursueTarget;
-    [SerializeField]private DeathState deathState;
-    public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager,EnemyLocomotion enemyLocomotion)
+    internal override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager,EnemyLocomotion enemyLocomotion)
     {
         //enemyLocomotion.Wandering();
         if (enemyManager.SearchTarget())
         {
-            Debug.Log(enemyManager.SearchTarget());
-            return PursueTarget;
+            return new PursueTargetState();
         }
         if (enemyStats.IsDeath)
-            return deathState;
+            return new DeathState();
         enemyAnimatorManager.ResetMovementValues();
         return this;
     }

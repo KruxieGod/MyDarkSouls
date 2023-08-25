@@ -10,8 +10,18 @@ public class EnemyBossHealthBar : HealthBar
 
     internal override void Initialize()
     {
-        slider = GetComponentInChildren<Slider>();
-        textMeshProUGUI = GetComponentInChildren<TextMeshProUGUI>();
+        if (slider == null)
+        {
+            slider = GetComponentInChildren<Slider>();
+            textMeshProUGUI = GetComponentInChildren<TextMeshProUGUI>();
+        }
+        gameObject.SetActive(true);
+    }
+
+    internal override void SetOff()
+    {
+        Debug.Log("OFF");
+        gameObject.SetActive(false);
     }
 
     internal override void SetName(string name)

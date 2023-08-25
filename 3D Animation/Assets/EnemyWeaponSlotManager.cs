@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyWeaponSlotManager : CharacterWeaponHolderSlotManager
 {
     private WeaponHolderSlot leftHandSlot;
-    private WeaponHolderSlot rightHandSlot;
+    public WeaponHolderSlot RightHandSlot { get; private set; }
     private WeaponHolderSlot backSlot;
     private DamageCollider leftHandDamageCollider;
     private DamageCollider rightHandDamageCollider;
@@ -26,11 +26,12 @@ public class EnemyWeaponSlotManager : CharacterWeaponHolderSlotManager
             }
             else if (weaponSlot.IsRightHandSlot)
             {
-                rightHandSlot = weaponSlot;
+                RightHandSlot = weaponSlot;
             }
             else if (weaponSlot.IsBackSlot)
                 backSlot = weaponSlot;
         }
+        AttackingWeapon = Instantiate(AttackingWeapon);
         LoadWeaponOnSlot(AttackingWeapon,false);
     }
 
@@ -51,8 +52,11 @@ public class EnemyWeaponSlotManager : CharacterWeaponHolderSlotManager
         }
         else
         {
-            rightHandSlot.LoadWeaponModel(weaponItem);
-            weaponItem.modelPrefab.GetComponentInChildren<DamageCollider>()?.UploadWeapon(weaponItem,GetComponent<CharacterStats>());
+            RightHandSlot.LoadWeaponModel(weaponItem);
+            var damageCollider = weaponItem.modelPrefab.GetComponentInChildren<DamageCollider>();
+            damageCollider?.UploadWeapon(weaponItem,GetComponent<CharacterStats>());
+            rightAttackingWeaponFX = weaponItem.modelPrefab.GetComponentInChildren<WeaponFX>();
+            rightAttackingWeaponFX.SetActive();
             #region Handle Right Weapon Idle,Collider Animations
             if (weaponItem != null)
             {
@@ -76,7 +80,7 @@ public class EnemyWeaponSlotManager : CharacterWeaponHolderSlotManager
 
     private void LoadRightWeaponDamageCollider()
     {
-        rightHandDamageCollider = rightHandSlot.CurrentWeaponModel.GetComponentInChildren<DamageCollider>();
+        rightHandDamageCollider = RightHandSlot.CurrentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
 
     public void OpenRightDamageCollider()

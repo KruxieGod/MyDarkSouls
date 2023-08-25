@@ -11,7 +11,7 @@ public class EnemyAnimatorManager : CharacterAnimator
     public bool CanDoCombo { get { return Animator.GetBool("CanDoCombo"); } set { Animator.SetBool("CanDoCombo", value); } }
     public void EnableCombo() => Animator.SetBool("CanDoCombo",true);
     public void DisableCombo() { Animator.SetBool("IsComboing", false); }
-    public bool IsUsingRootMotion => Animator.GetBool("IsUsingRootMotion");
+    public bool IsInteracting => Animator.GetBool("IsInteracting");
     [SerializeField] private GameObject particlesAfterDeath;
     public GameObject ParticlesAfterDeath => particlesAfterDeath;
     public Animator Animator;
@@ -30,8 +30,10 @@ public class EnemyAnimatorManager : CharacterAnimator
 
     public void AddAndSpawnSouls()
     {
+        GlobalEventManager.OnBossFightEventEnd.Invoke();
         Destroy(Instantiate(particlesAfterDeath, transform.position, Quaternion.identity),10f);
         FindObjectOfType<PlayerStats>().AddSouls(enemyStats);
+        Destroy(this.gameObject);
     }
 
     private void LateUpdate()
@@ -41,7 +43,7 @@ public class EnemyAnimatorManager : CharacterAnimator
 
     public override void PlayTargetAnimation(string targetAnimation, bool useRootMotion = false, bool isInteracting = false, float time = 0)
     {
-        Animator.SetBool("IsUsingRootMotion", useRootMotion);
+        Animator.SetBool("IsInteracting", useRootMotion);
         float animationTransition = time < 0.00001f ? 0.2f : time;
         Animator.CrossFade(targetAnimation, animationTransition);
     }

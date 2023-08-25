@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     private PlayerManager playerManager;
     private UIManager uiManager;
     private CameraManager cameraManager;
+    private WeaponSlotManager weaponSlotManager;
 
     private bool eIsPressed;
     private float timePressedE = 0f;
@@ -77,6 +78,7 @@ public class InputManager : MonoBehaviour
         playerAttacker = GetComponent<PlayerAttacker>();
         animatorManager = GetComponent<AnimatorManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        weaponSlotManager = GetComponent<WeaponSlotManager>();
     }
 
     private void OnEnable()
